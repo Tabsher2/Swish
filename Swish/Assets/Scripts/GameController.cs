@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour {
 
+    public GameObject Basketball;
+    public static Vector3 ballStart = new Vector3(0f, 1f, 0f);
+
 	// Use this for initialization
 	void Start () {
 		
@@ -11,13 +14,9 @@ public class GameController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        if (Input.touchCount > 0 && Input.GetTouch(0).phase == TouchPhase.Moved)
-        {
-            // Get movement of the finger since last frame
-            Vector2 touchDeltaPosition = Input.GetTouch(0).deltaPosition;
-
-            // Move object across XY plane
-            transform.Translate(-touchDeltaPosition.x, -touchDeltaPosition.y, 0);
-        }
+        if (Input.GetKeyDown("space"))
+            Instantiate(Basketball, ballStart, Quaternion.identity);
     }
+
+    
 }
