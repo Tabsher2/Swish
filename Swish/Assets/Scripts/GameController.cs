@@ -5,7 +5,7 @@ using UnityEngine;
 public class GameController : MonoBehaviour {
 
     public GameObject Basketball;
-    public static Vector3 ballStart = new Vector3(0f, 1f, 0f);
+    public static Vector3 ballStart = new Vector3(3f, 1f, 0f);
 
 	// Use this for initialization
 	void Start () {
@@ -16,7 +16,18 @@ public class GameController : MonoBehaviour {
 	void Update () {
         if (Input.GetKeyDown("space"))
             Instantiate(Basketball, ballStart, Quaternion.identity);
+
     }
 
-    
+    public void CreateBall()
+    {
+        Instantiate(Basketball, ballStart, Quaternion.identity);
+    }
+
+    public void OnTriggerEnter(Collider other)
+    {
+        if (other.transform.name.Equals("Net1"))
+            Debug.Log("Made it!");
+    }
+
 }

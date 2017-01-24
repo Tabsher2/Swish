@@ -5,9 +5,11 @@ using UnityEngine;
 public class ThrowScript : MonoBehaviour {
 
     public float factor;
-    public float startTime;
-    public Vector3 startPos;
     public Rigidbody rb;
+
+    float startTime;
+
+    Vector3 startPos;
 
     private void OnMouseDown()
     {
@@ -30,11 +32,13 @@ public class ThrowScript : MonoBehaviour {
         force.x = force.magnitude;
         force.y = force.magnitude;
         force /= (Time.time - startTime);
-        
+
         rb.velocity = (force * factor);
+        
         
 
     }
+
 
     IEnumerator ReturnBall()
     {
