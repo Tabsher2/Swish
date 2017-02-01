@@ -29,7 +29,13 @@ public class GameController : MonoBehaviour
 
     public void CreateBall()
     {
+        ResetBall();
         Instantiate(Basketball, ballStart, Quaternion.identity);
+    }
+    private void ResetBall()
+    {
+        BottomNetTrigger.resetTrigger();
+        TopNetTrigger.resetTrigger();
     }
 
     public void OnTriggerExit(Collider other)
