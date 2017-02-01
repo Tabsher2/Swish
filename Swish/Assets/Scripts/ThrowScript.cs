@@ -2,19 +2,28 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class ThrowScript : MonoBehaviour {
+public class ThrowScript : MonoBehaviour
+{
 
-    public float factor;
     public Rigidbody rb;
 
+    public static float maxTime = 1;
+    public static float minSwipeDist = 25;
+
     float startTime;
+    float endTime;
+    float swipeTime;
+    float swipeDistance;
+    float factor = GameController.ballStart.x / 2.8f;
 
     Vector3 startPos;
+    Vector3 startPosition;
 
     private void OnMouseDown()
     {
         startTime = Time.time;
         startPos = Input.mousePosition;
+        startPosition = Input.mousePosition;
         startPos.x = transform.position.x - Camera.main.transform.position.x;
         startPos = Camera.main.ScreenToWorldPoint(startPos);
 
@@ -23,19 +32,27 @@ public class ThrowScript : MonoBehaviour {
 
     private void OnMouseUp()
     {
-        rb.useGravity = true;
+        endTime = Time.time;
         Vector3 endPos = Input.mousePosition;
+        swipeDistance = (endPos - startPosition).magnitude;
         endPos.z = transform.position.x - Camera.main.transform.position.x;
         endPos = Camera.main.ScreenToWorldPoint(endPos);
-       
-        Vector3 force = endPos - startPos;
-        force.x = force.magnitude;
-        force.y = force.magnitude;
-        force /= (Time.time - startTime);
+        swipeTime = endTime - startTime;
+        Debug.Log(maxTime);
+        Debug.Log(minSwipeDist);
+        if (swipeTime < maxTime && swipeDistance > minSwipeDist)
+        {
+            rb.useGravity = true;
+            Vector3 force = endPos - startPos;
+            force.x = force.magnitude;
+            force.y = force.magnitude;
+            force /= swipeTime;
 
-        rb.velocity = (force * factor);
-        
-        
+            rb.velocity = force;
+        }
+
+
+
 
     }
 
