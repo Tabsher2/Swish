@@ -12,6 +12,7 @@ public class TopNetTrigger : MonoBehaviour {
         {
             //SHOT MADE HERE
             trigger = true;
+            GameController.setMadeShot();
         }
         //Debug.Log(trigger + "top");
     }
