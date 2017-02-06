@@ -26,8 +26,6 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
             Instantiate(Basketball, ballStart, Quaternion.identity);
-        //if (Basketball.transform.position.x > 10)
-            //Destroy(Basketball)
         
         if (MadeShot)
         {
@@ -68,7 +66,7 @@ public class GameController : MonoBehaviour
 
     public void textFade()
     {
-        
+        shotText.transform.Translate(0, Time.deltaTime, 0);
 
     }
 }
