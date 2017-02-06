@@ -14,11 +14,13 @@ public class GameController : MonoBehaviour
     public static Vector3 textStartPos = new Vector3(7f, 3f, 1f);
 
     public static bool throughBasket = false;
+    private static float shotScore = 0;
+    private static bool swish = false;
 
     // Use this for initialization
     void Start()
     {
-
+        
     }
 
     // Update is called once per frame
@@ -31,9 +33,10 @@ public class GameController : MonoBehaviour
         {
             //do things after user makes shot
             Debug.Log("Shot made registered in update method");
-            swishMade();
-            textFade();
+            SwishMade();
         }
+        if (shotText != null)
+            TextFade();
     }
 
     public void CreateBall()
@@ -52,21 +55,26 @@ public class GameController : MonoBehaviour
         throughBasket = true;
     }
 
-    public static void setMadeShot()
+    public static void SetMadeShot(float score, bool isSwish)
     {
         MadeShot = true;
+        shotScore = score;
+        swish = isSwish;
         Debug.Log("Made Shot!");
     }
 
-    private void swishMade()
+    private void SwishMade()
     {
         shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10,90,0));
+        if (swish)
+            shotText.GetComponent<TextMesh>().text = "Swish! - " + shotScore.ToString();
+        else
+            shotText.GetComponent<TextMesh>().text = "Made it! - " + shotScore.ToString();
         MadeShot = false;
     }
 
-    public void textFade()
+    public void TextFade()
     {
         shotText.transform.Translate(0, Time.deltaTime, 0);
-
     }
 }

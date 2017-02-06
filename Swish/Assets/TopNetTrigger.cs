@@ -12,9 +12,13 @@ public class TopNetTrigger : MonoBehaviour {
         {
             //SHOT MADE HERE
             trigger = true;
-            GameController.setMadeShot();
         }
         //Debug.Log(trigger + "top");
+    }
+
+    public static bool isTriggered()
+    {
+        return trigger;
     }
 
     public static void resetTrigger()

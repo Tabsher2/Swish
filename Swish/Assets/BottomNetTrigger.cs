@@ -8,7 +8,11 @@ public class BottomNetTrigger : MonoBehaviour {
 
     private void OnTriggerEnter(Collider other)
     {
-        if (!BottomNetTrigger.isTriggered()) trigger = true;
+        if (TopNetTrigger.isTriggered())
+        {
+            //trigger = true;
+            ScoreAccumulator.CalculateScore();
+        }
         //Debug.Log(trigger + "bottom");
     }
 

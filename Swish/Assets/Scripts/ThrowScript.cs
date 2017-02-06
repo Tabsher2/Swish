@@ -38,8 +38,6 @@ public class ThrowScript : MonoBehaviour
         endPos.z = transform.position.x - Camera.main.transform.position.x;
         endPos = Camera.main.ScreenToWorldPoint(endPos);
         swipeTime = endTime - startTime;
-        Debug.Log(maxTime);
-        Debug.Log(minSwipeDist);
         if (swipeTime < maxTime && swipeDistance > minSwipeDist)
         {
             rb.useGravity = true;
