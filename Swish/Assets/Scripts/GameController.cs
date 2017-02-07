@@ -7,16 +7,24 @@ public class GameController : MonoBehaviour
 {
     private static bool MadeShot = false;
 
-    public GameObject shotText;
+    private GameObject shotText;
     public GameObject shotTextSwish;
     public GameObject Basketball;
+    private GameObject newBasketball;
+    public Text remainingShotsText;
     public static Vector3 ballStart = new Vector3(3f, 1f, 0f);
     public static Vector3 textStartPos = new Vector3(7f, 3f, 1f);
 
     public static bool throughBasket = false;
     private static float shotScore = 0;
     private static bool swish = false;
+    private int remainingShots = 3;
 
+
+    private void Awake()
+    {
+        newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+    }
     // Use this for initialization
     void Start()
     {
@@ -33,21 +41,35 @@ public class GameController : MonoBehaviour
         {
             //do things after user makes shot
             Debug.Log("Shot made registered in update method");
-            SwishMade();
+            ShotMade();
+            remainingShots--;
+            CreateBall();
         }
         if (shotText != null)
             TextFade();
+
+        if (remainingShots == 0)
+            Debug.Log("Turn ends here!");
+
+        if (OutOfBounds())
+        {
+            remainingShots--;
+            CreateBall();
+        }
     }
 
     public void CreateBall()
     {
         ResetBall();
-        Instantiate(Basketball, ballStart, Quaternion.identity);
+        newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+        UpdateRSText();
     }
     private void ResetBall()
     {
+        Destroy(newBasketball);
         BottomNetTrigger.resetTrigger();
         TopNetTrigger.resetTrigger();
+        shotScore = 0;
     }
 
     public void OnTriggerExit(Collider other)
@@ -63,7 +85,7 @@ public class GameController : MonoBehaviour
         Debug.Log("Made Shot!");
     }
 
-    private void SwishMade()
+    private void ShotMade()
     {
         shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10,90,0));
         if (swish)
@@ -77,4 +99,25 @@ public class GameController : MonoBehaviour
     {
         shotText.transform.Translate(0, Time.deltaTime, 0);
     }
+
+    private void UpdateRSText()
+    {
+        remainingShotsText.text = "Shots Left:\n\t\t" + remainingShots.ToString() + "/3";
+    }
+
+    private bool OutOfBounds()
+    {
+        bool outofbounds = false;
+        if (newBasketball.transform.position.x > 10)
+            outofbounds = true;
+        else if (newBasketball.transform.position.x < 3)
+            outofbounds = true;
+        else if (newBasketball.transform.position.z > 5)
+            outofbounds = true;
+        else if (newBasketball.transform.position.z < -4)
+            outofbounds = true;
+        return outofbounds;
+
+    }
+
 }

@@ -10,7 +10,8 @@ public class ScoreAccumulator : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		
+        shotScore = 0;
+        hitObstacles.Clear();
 	}
 	
 	// Update is called once per frame
@@ -22,12 +23,11 @@ public class ScoreAccumulator : MonoBehaviour {
     {
         if (this.name.Equals("Rim"))
         {
-            Debug.Log("Rimjob");
             hitObstacles.Add("Rim");
         }
+        
         else if (this.name.Equals("basketball_hoop_main"))
         {
-            Debug.Log("Backboard Job");
             hitObstacles.Add("Backboard");
         }
     }
@@ -35,11 +35,6 @@ public class ScoreAccumulator : MonoBehaviour {
     public static void CalculateScore()
     {
         shotScore = 100;
-        Debug.Log(hitObstacles.Count);
-        hitObstacles.ForEach(delegate (string name)
-        {
-            Debug.Log(name);
-        });
         if (hitObstacles.Find(x => x.Contains("Rim")) != null)
             swish = false;
         if (hitObstacles.Find(x => x.Contains("backboard")) != null)
