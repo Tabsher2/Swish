@@ -21,7 +21,7 @@ public class TopNetTrigger : MonoBehaviour {
         return trigger;
     }
 
-    public static void resetTrigger()
+    public static void ResetTrigger()
     {
         trigger = false;
     }

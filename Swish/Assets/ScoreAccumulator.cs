@@ -11,7 +11,6 @@ public class ScoreAccumulator : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         shotScore = 0;
-        hitObstacles.Clear();
 	}
 	
 	// Update is called once per frame
@@ -21,14 +20,17 @@ public class ScoreAccumulator : MonoBehaviour {
 
     private void OnCollisionEnter(Collision other)
     {
-        if (this.name.Equals("Rim"))
+        if (!hitObstacles.Contains(this.name))
         {
-            hitObstacles.Add("Rim");
-        }
-        
-        else if (this.name.Equals("basketball_hoop_main"))
-        {
-            hitObstacles.Add("Backboard");
+            if (this.name.Equals("Rim"))
+            {
+                hitObstacles.Add("Rim");
+            }
+
+            else if (this.name.Equals("basketball_hoop_main"))
+            {
+                hitObstacles.Add("Backboard");
+            }
         }
     }
 
@@ -37,15 +39,19 @@ public class ScoreAccumulator : MonoBehaviour {
         shotScore = 100;
         if (hitObstacles.Find(x => x.Contains("Rim")) != null)
             swish = false;
-        if (hitObstacles.Find(x => x.Contains("backboard")) != null)
+        if (hitObstacles.Find(x => x.Contains("Backboard")) != null)
             swish = false;
 
         if (swish)
             shotScore *= 2;
 
-
-
         GameController.SetMadeShot(shotScore, swish);
 
+    }
+
+    public static void ResetScore()
+    {
+        swish = true;
+        hitObstacles.Clear();
     }
 }

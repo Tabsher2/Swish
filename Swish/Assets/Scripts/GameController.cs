@@ -67,8 +67,9 @@ public class GameController : MonoBehaviour
     private void ResetBall()
     {
         Destroy(newBasketball);
-        BottomNetTrigger.resetTrigger();
-        TopNetTrigger.resetTrigger();
+        BottomNetTrigger.ResetTrigger();
+        TopNetTrigger.ResetTrigger();
+        ScoreAccumulator.ResetScore();
         shotScore = 0;
     }
 
