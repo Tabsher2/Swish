@@ -76,6 +76,9 @@
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
@@ -84,7 +87,9 @@
     <Compile Include="Assets\BallThrow.cs" />
     <Compile Include="Assets\BottomNetTrigger.cs" />
     <Compile Include="Assets\CameraMotor.cs" />
+    <Compile Include="Assets\ControllingCameraAspectScript.cs" />
     <Compile Include="Assets\DestroyText.cs" />
+    <Compile Include="Assets\GameControllerMenu.cs" />
     <Compile Include="Assets\PlayerScore.cs" />
     <Compile Include="Assets\ScoreAccumulator.cs" />
     <Compile Include="Assets\Scripts\CameraSwipeManager.cs" />
