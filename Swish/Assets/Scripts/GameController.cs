@@ -11,8 +11,12 @@ public class GameController : MonoBehaviour
     public GameObject shotTextSwish;
     public GameObject Basketball;
     private GameObject newBasketball;
+    public GameObject obstacleMenu;
     public Text remainingShotsText;
+    public GameObject wallObstacle;
+    private GameObject newWall;
     public static Vector3 ballStart = new Vector3(3f, 1f, 0f);
+    public static Vector3 wallStart = new Vector3(6.08f, 1.92f, -1.37f);
     public static Vector3 textStartPos = new Vector3(7f, 3f, 1f);
 
     public static bool throughBasket = false;
@@ -24,6 +28,8 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+        obstacleMenu.SetActive(false);
+        wallObstacle.SetActive(false);
     }
     // Use this for initialization
     void Start()
@@ -119,6 +125,24 @@ public class GameController : MonoBehaviour
             outofbounds = true;
         return outofbounds;
 
+    }
+
+    public void OpenObstacleMenu()
+    {
+        obstacleMenu.SetActive(true);
+        newBasketball.SetActive(false);
+    }
+
+    public void CloseObstacleMenu()
+    {
+        obstacleMenu.SetActive(false);
+        newBasketball.SetActive(true);
+    }
+
+    public void CreateWall()
+    {
+        newWall = Instantiate(wallObstacle, wallStart, Quaternion.Euler(0, 90, 0));
+        newWall.SetActive(true);
     }
 
 }
