@@ -34,6 +34,8 @@ public class ScoreAccumulator : MonoBehaviour {
         }
         if (this.name.Equals("BrickWall(Clone)"))
             hitObstacles.Add("Wall");
+        else if (this.name.Equals("Trampoline(Clone)"))
+            hitObstacles.Add("Trampoline");
     }
 
     public static void CalculateScore()
@@ -45,6 +47,8 @@ public class ScoreAccumulator : MonoBehaviour {
             swish = false;
         if (hitObstacles.Find(x => x.Contains("Wall")) != null)
             shotScore += 150;
+        if (hitObstacles.Find(x => x.Contains("Trampoline")) != null)
+            shotScore += 200;
         if (swish)
             shotScore *= 2;
 

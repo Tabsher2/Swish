@@ -7,16 +7,28 @@ public class GameController : MonoBehaviour
 {
     private static bool MadeShot = false;
 
-    private GameObject shotText;
-    public GameObject shotTextSwish;
+    
     public GameObject Basketball;
     private GameObject newBasketball;
-    public GameObject obstacleMenu;
+    
     public Text remainingShotsText;
+
+
+    //Obstacles
+    public GameObject obstacleMenu;
     public GameObject wallObstacle;
     private GameObject newWall;
+
+    public GameObject trampolineObstacle;
+    private GameObject newTrampoline;
+
+    //UI text
+    private GameObject shotText;
+    public GameObject shotTextSwish;
+
     public static Vector3 ballStart = new Vector3(3f, 1f, 0f);
     public static Vector3 wallStart = new Vector3(6.08f, 1.92f, -1.37f);
+    public static Vector3 trampStart = new Vector3(6f, 0.11f, 0f);
     public static Vector3 textStartPos = new Vector3(7f, 3f, 1f);
 
     public static bool throughBasket = false;
@@ -28,8 +40,7 @@ public class GameController : MonoBehaviour
     private void Awake()
     {
         newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
-        obstacleMenu.SetActive(false);
-        wallObstacle.SetActive(false);
+        RemoveAllObstacles();
     }
     // Use this for initialization
     void Start()
@@ -139,10 +150,23 @@ public class GameController : MonoBehaviour
         newBasketball.SetActive(true);
     }
 
+    private void RemoveAllObstacles()
+    {
+        obstacleMenu.SetActive(false);
+        wallObstacle.SetActive(false);
+        trampolineObstacle.SetActive(false);
+    }
+
     public void CreateWall()
     {
         newWall = Instantiate(wallObstacle, wallStart, Quaternion.Euler(0, 90, 0));
         newWall.SetActive(true);
+    }
+
+    public void CreateTrampoline()
+    {
+        newTrampoline = Instantiate(trampolineObstacle, trampStart, Quaternion.identity);
+        newTrampoline.SetActive(true);
     }
 
 }
