@@ -84,6 +84,7 @@
     <Compile Include="Assets\BallThrow.cs" />
     <Compile Include="Assets\BottomNetTrigger.cs" />
     <Compile Include="Assets\CameraMotor.cs" />
+    <Compile Include="Assets\CheckBallTimeout.cs" />
     <Compile Include="Assets\ControllingCameraAspectScript.cs" />
     <Compile Include="Assets\DestroyText.cs" />
     <Compile Include="Assets\GameControllerMenu.cs" />

@@ -9,6 +9,7 @@ public class ThrowScript : MonoBehaviour
 
     public static float maxTime = 1;
     public static float minSwipeDist = 25;
+    private static bool isThrown = false;
 
     float startTime;
     float endTime;
@@ -40,18 +41,18 @@ public class ThrowScript : MonoBehaviour
         swipeTime = endTime - startTime;
         if (swipeTime < maxTime && swipeDistance > minSwipeDist)
         {
-            rb.useGravity = true;
-            Vector3 force = endPos - startPos;
-            force.x = force.magnitude;
-            force.y = force.magnitude;
-            force /= swipeTime;
+            if (!isThrown)
+            {
+                isThrown = true;
+                rb.useGravity = true;
+                Vector3 force = endPos - startPos;
+                force.x = force.magnitude;
+                force.y = force.magnitude;
+                force /= swipeTime;
 
-            rb.velocity = force;
+                rb.velocity = force;
+            }
         }
-
-
-
-
     }
 
 
@@ -60,5 +61,10 @@ public class ThrowScript : MonoBehaviour
         yield return new WaitForSeconds(4.0f);
         transform.position = Vector3.zero;
         rb.velocity = Vector3.zero;
+    }
+
+    public static void ResetThrow()
+    {
+        isThrown = false;
     }
 }

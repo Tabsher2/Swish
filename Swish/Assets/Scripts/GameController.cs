@@ -68,7 +68,7 @@ public class GameController : MonoBehaviour
         if (remainingShots == 0)
             Debug.Log("Turn ends here!");
 
-        if (OutOfBounds())
+        if (KillBall())
         {
             remainingShots--;
             CreateBall();
@@ -87,6 +87,8 @@ public class GameController : MonoBehaviour
         BottomNetTrigger.ResetTrigger();
         TopNetTrigger.ResetTrigger();
         ScoreAccumulator.ResetScore();
+        ThrowScript.ResetThrow();
+        CheckBallTimeout.ResetDeadBall();
         shotScore = 0;
     }
 
@@ -123,18 +125,22 @@ public class GameController : MonoBehaviour
         remainingShotsText.text = "Shots Left:\n\t\t" + remainingShots.ToString() + "/3";
     }
 
-    private bool OutOfBounds()
+    private bool KillBall()
     {
-        bool outofbounds = false;
-        if (newBasketball.transform.position.x > 10)
-            outofbounds = true;
-        else if (newBasketball.transform.position.x < 3)
-            outofbounds = true;
-        else if (newBasketball.transform.position.z > 5)
-            outofbounds = true;
-        else if (newBasketball.transform.position.z < -4)
-            outofbounds = true;
-        return outofbounds;
+        bool killball = false;
+        if (newBasketball.transform.position.x > 35)
+            killball = true;
+        else if (newBasketball.transform.position.x < -25)
+            killball = true;
+        else if (newBasketball.transform.position.z > 35)
+            killball = true;
+        else if (newBasketball.transform.position.z < -25)
+            killball = true;
+        else if (newBasketball.GetComponent<Rigidbody>().velocity == new Vector3(0, 0, 0) && newBasketball.transform.position != ballStart)
+            killball = true;
+        else if (CheckBallTimeout.IsBallDead())
+            killball = true;
+        return killball;
 
     }
 

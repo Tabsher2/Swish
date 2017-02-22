@@ -52,6 +52,8 @@ public partial class JSONServices_AddUser : System.Web.UI.Page
 		{
 			connection.Open();
 			DateTime today = DateTime.Today;
+            string salt = CreateSalt(15);
+            request.pw = GenerateSHA256Hash(request.pw, salt);
 			string sql = String.Format("INSERT into userInfo (email,username,password, dateCreated) VALUES ('{0}','{1}','{2}', '{3}') SELECT @userID=@@IDENTITY", request.name, request.uname, request.pw, today );
 			SqlCommand command = new SqlCommand( sql, connection );
 			command.Parameters.Add("@userID", SqlDbType.Int );
@@ -99,5 +101,24 @@ public partial class JSONServices_AddUser : System.Web.UI.Page
 		Response.Write(strJson);
 		Response.End();
 	}
+
+    private String CreateSalt(int size)
+    {
+        var rng = new System.Security.Cryptography.RNGCryptoServiceProvider();
+        var buffer = new byte[size];
+        rng.GetBytes(buffer);
+
+        return Convert.ToBase64String(buffer);
+
+    }
+
+    private String GenerateSHA256Hash(String input, String salt)
+    {
+        byte[] bytes = System.Text.Encoding.UTF8.GetBytes(input + salt);
+        System.Security.Cryptography.SHA256Managed hashString = new System.Security.Cryptography.SHA256Managed();
+        byte[] hash = hashString.ComputeHash(bytes);
+
+        return ByteArrayToHexString(hash);
+    }
 
 }
