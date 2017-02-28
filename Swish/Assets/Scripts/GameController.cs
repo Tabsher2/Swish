@@ -36,9 +36,20 @@ public class GameController : MonoBehaviour
     private static bool swish = false;
     private int remainingShots = 3;
 
+    //Replay variables
+    private static Vector3 replayVelocity;
+    public Text replayText;
+    private GameObject replayBall;
+    private static List<string> usedObstacles = new List<string>();
+    private static bool isReplayable = false;
+    private static bool isReplaying = false;
+    private static bool replayComplete = false;
+    public GameObject replayShotButton;
+
 
     private void Awake()
     {
+        replayText.GetComponent<Text>().enabled = false;
         newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
         RemoveAllObstacles();
     }
@@ -73,6 +84,19 @@ public class GameController : MonoBehaviour
             remainingShots--;
             CreateBall();
         }
+        if (isReplayable)
+        {
+            replayShotButton.GetComponent<Image>().color = Color.white;
+            replayShotButton.GetComponent<Button>().enabled = true;
+        }
+        else
+        {
+            replayShotButton.GetComponent<Image>().color = Color.gray;
+            replayShotButton.GetComponent<Button>().enabled = false;
+        }
+        if (replayComplete)
+            EndReplay();
+
     }
 
     public void CreateBall()
@@ -99,10 +123,16 @@ public class GameController : MonoBehaviour
 
     public static void SetMadeShot(float score, bool isSwish)
     {
-        MadeShot = true;
-        shotScore = score;
-        swish = isSwish;
-        Debug.Log("Made Shot!");
+        if (!isReplaying)
+        {
+            MadeShot = true;
+            shotScore = score;
+            swish = isSwish;
+            Debug.Log("Made Shot!");
+        }
+        else
+            replayComplete = true;
+       
     }
 
     private void ShotMade()
@@ -112,6 +142,7 @@ public class GameController : MonoBehaviour
             shotText.GetComponent<TextMesh>().text = "Swish! - " + shotScore.ToString();
         else
             shotText.GetComponent<TextMesh>().text = "Made it! - " + shotScore.ToString();
+        StoreShotData();
         MadeShot = false;
     }
 
@@ -173,6 +204,41 @@ public class GameController : MonoBehaviour
     {
         newTrampoline = Instantiate(trampolineObstacle, trampStart, Quaternion.identity);
         newTrampoline.SetActive(true);
+    }
+
+    private void StoreShotData()
+    {
+        replayVelocity = ThrowScript.shotVelocity;
+        usedObstacles = ScoreAccumulator.GetUsedObstacles();
+        isReplayable = true;
+    }
+
+    public void ReplayShot()
+    {
+        isReplaying = true;
+        remainingShotsText.GetComponent<Text>().enabled = false;
+        newBasketball.SetActive(false);
+        replayText.GetComponent<Text>().enabled = true;
+        replayBall = Instantiate(Basketball, ballStart, Quaternion.identity);
+        StartCoroutine(DelayReplay());
+
+    }
+
+    IEnumerator DelayReplay()
+    {
+        yield return new WaitForSeconds(1);
+        replayBall.GetComponent<Rigidbody>().velocity = replayVelocity;
+        replayBall.GetComponent<Rigidbody>().useGravity = true;
+    }
+
+    public void EndReplay()
+    {
+        isReplaying = false;
+        replayComplete = false;
+        Destroy(replayBall);
+        remainingShotsText.GetComponent<Text>().enabled = true;
+        newBasketball.SetActive(true);
+        replayText.GetComponent<Text>().enabled = false;
     }
 
 }

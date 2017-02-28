@@ -11,6 +11,8 @@ public class ThrowScript : MonoBehaviour
     public static float minSwipeDist = 25;
     private static bool isThrown = false;
 
+    public static Vector3 shotVelocity;
+
     float startTime;
     float endTime;
     float swipeTime;
@@ -51,6 +53,7 @@ public class ThrowScript : MonoBehaviour
                 force /= swipeTime;
 
                 rb.velocity = force;
+                shotVelocity = rb.velocity;
             }
         }
     }
@@ -66,5 +69,6 @@ public class ThrowScript : MonoBehaviour
     public static void ResetThrow()
     {
         isThrown = false;
+        shotVelocity = new Vector3(0, 0, 0);
     }
 }

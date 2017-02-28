@@ -7,6 +7,7 @@ public class ScoreAccumulator : MonoBehaviour {
     static List<string> hitObstacles = new List<string>();
     private static bool swish = true;
     private static float shotScore = 0;
+    public static List<string> usedObstacles = new List<string>();
 
 	// Use this for initialization
 	void Start () {
@@ -60,5 +61,12 @@ public class ScoreAccumulator : MonoBehaviour {
     {
         swish = true;
         hitObstacles.Clear();
+        usedObstacles.Clear();
+    }
+
+    public static List<string> GetUsedObstacles()
+    {
+        usedObstacles = hitObstacles;
+        return usedObstacles;
     }
 }
