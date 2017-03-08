@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
+
 public class GameController : MonoBehaviour
 {
     private static bool MadeShot = false;
-
     
     public GameObject Basketball;
     private GameObject newBasketball;
@@ -56,7 +56,6 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        
     }
 
     // Update is called once per frame
