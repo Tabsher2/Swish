@@ -14,7 +14,8 @@ public class GetURL : MonoBehaviour {
         string url = "http://swishgame.com/AppCode/Test.aspx";
         WebRequest request = WebRequest.Create(url);
         request.Method = "GET";
-        
+        request.ContentType = "application/x-www-form-urlencoded";
+
         WebResponse response = request.GetResponse();
         Stream dataStream = response.GetResponseStream();
         
