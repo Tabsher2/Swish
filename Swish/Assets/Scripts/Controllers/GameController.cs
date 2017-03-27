@@ -40,6 +40,15 @@ public class GameController : MonoBehaviour
     public GameObject notificationPanel;
     public Text notificationMessage;
 
+    //Notification Listeners
+    private static bool startReplay = false;
+    private static bool transitionToShotSelection = false;
+    private static bool beginShotSelection = false;
+    private static bool selectingShot = false;
+    public static bool showShotSelection = false;
+    public static bool slideCameraUp = false;
+    public static bool spotSelected = false;
+
     //Spawn Locations
     public static Vector3 ballStart;
     public static Vector3 textStartPos = new Vector3(7f, 3f, 1f);
@@ -55,10 +64,11 @@ public class GameController : MonoBehaviour
     public Text replayText;
     private GameObject replayBall;
     private static List<string> usedObstacles = new List<string>();
-    private static bool startReplay = false;
     private static bool isReplaying = false;
     private static bool replayComplete = false;
     public GameObject replayShotButton;
+
+    
 
 
     private void Awake()
@@ -68,7 +78,6 @@ public class GameController : MonoBehaviour
     // Use this for initialization
     void Start()
     {
-        //newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
         LoadShotData();
     }
 
@@ -122,7 +131,7 @@ public class GameController : MonoBehaviour
         if (shotText != null)
             TextFade();
 
-        if (newBasketball.transform.position != ballStart || isReplaying)
+        if (selectingShot || newBasketball.transform.position != ballStart || isReplaying)
             ballInPlay = true;
         else
             ballInPlay = false;
@@ -158,6 +167,30 @@ public class GameController : MonoBehaviour
             DisableButtons();
         else
             EnableButtons();
+
+        if (slideCameraUp)
+            CameraController.MoveToShotSelection(Camera.main.transform.position, Camera.main.transform.eulerAngles);
+
+        if (showShotSelection)
+            NotifyShotSelection();
+
+        if (spotSelected)
+        {
+            ballStart = LocationSelector.selectedLocation;
+            newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+            spotSelected = false;
+            selectingShot = false;
+            LocationSelector.allowSelection = false;
+
+            //Re-enable UI
+            replayShotButton.SetActive(true);
+            obstacleMenuButton.SetActive(true);
+            remainingShotsText.enabled = true;
+            replayText.enabled = true;
+            userLettersText.enabled = true;
+            opponentLettersText.enabled = true;
+        }
+
 
     }
 
@@ -355,6 +388,14 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(false);
         if (startReplay)
             ShowInitialReplay();
+        else if (transitionToShotSelection)
+            ActivateShotSelection();
+        else if (beginShotSelection)
+        {
+            Destroy(notificationPanel);
+            notificationPanel = Instantiate(notificationPanel, new Vector3(0, 0, 0), Quaternion.identity);
+            AllowLocationSelection();
+        }
 
     }
 
@@ -366,6 +407,7 @@ public class GameController : MonoBehaviour
         takingShot = true;
         remainingShots = 3;
         UpdateRSText();
+        transitionToShotSelection = true;
     }
 
     private void NotifyShotRequirements()
@@ -389,10 +431,11 @@ public class GameController : MonoBehaviour
         notificationMessage.text = opponentName + " missed their shot!\n\t\t   Create your own!";
         //PLACEHOLDER BALLSTART CODE
         //We need to add shotSelection Logic here after press okay
-        ballStart.x = 3.0f;
-        ballStart.y = 1.0f;
-        ballStart.z = 0f;
+        ballStart.x = 8.5f;
+        ballStart.y = 444f;
+        ballStart.z = 3f;
         newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+        transitionToShotSelection = true;
     }
 
     private void NotifyCopySuccess()
@@ -417,6 +460,13 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\t   Too bad!";
         StartCoroutine(KillApplication());
+    }
+
+    private void NotifyShotSelection()
+    {
+        notificationPanel.SetActive(true);
+        notificationMessage.text = "\t  Tap on the court to\n\t\tselect a location.";
+        beginShotSelection = true;
     }
 
     #endregion
@@ -532,5 +582,27 @@ public class GameController : MonoBehaviour
         yield return new WaitForSeconds(2);
         UnityEditor.EditorApplication.isPlaying = false;
     }
+
+    #region "Shot Selection"
+
+    private void ActivateShotSelection()
+    {
+        transitionToShotSelection = false;
+        selectingShot = true;
+        replayShotButton.SetActive(false);
+        obstacleMenuButton.SetActive(false);
+        remainingShotsText.enabled = false;
+        replayText.enabled = false;
+        userLettersText.enabled = false;
+        opponentLettersText.enabled = false;
+        slideCameraUp = true;
+    }
+
+    private void AllowLocationSelection()
+    {
+        LocationSelector.allowSelection = true;
+    }
+
+    #endregion
 
 }
