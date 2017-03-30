@@ -24,13 +24,15 @@ namespace NetworkData
             public int shotMade;
             public int currentTurnOwner;
             public int turnNo;
+            public int gameID;
         }
 
         [Serializable]
         public class MadeShotRequest
         {
-            public float p1score;
-            public float p2score;
+            public int gameID;
+            public int p1score;
+            public int p2score;
             public float locationX;
             public float locationZ;
             public int currentTurnOwner;
@@ -46,6 +48,15 @@ namespace NetworkData
         {
             public int p1letters;
             public int p2letters;
+            public int failedShot;
+            public int gameID;
+        }
+
+        [Serializable]
+        public class CopyShotRequest
+        {
+            public int gameID;
+            public int shotStatus;
         }
 
 
@@ -60,6 +71,7 @@ namespace NetworkData
             requestObject.shotMade = 0;
             requestObject.currentTurnOwner = turnOwnerId;
             requestObject.turnNo = turnNo;
+            requestObject.gameID = 1;
 
             string jsonString = JsonUtility.ToJson(requestObject);
             byte[] data = Encoding.UTF8.GetBytes(jsonString);
@@ -78,17 +90,18 @@ namespace NetworkData
             // Read the content.  
             string responseFromServer = reader.ReadToEnd();
             responseMessage = JsonUtility.FromJson<ServerResponse>(responseFromServer);
-            Debug.Log(responseMessage.message);
             // Display the content.  
         }
 
-        public static void SendMadeShot(int player, int turnOwnerId, float userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
+        public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
         {
             ServerResponse responseMessage = new ServerResponse();
             MadeShotRequest requestObject = new MadeShotRequest();
 
             string url = "http://swishgame.com/AppCode/MadeShot.aspx";
             WebRequest request = WebRequest.Create(url);
+
+            requestObject.gameID = 1;
 
             //A 1 since the user made it
             requestObject.shotMade = 1;
@@ -127,11 +140,10 @@ namespace NetworkData
             // Read the content.  
             string responseFromServer = reader.ReadToEnd();
             responseMessage = JsonUtility.FromJson<ServerResponse>(responseFromServer);
-            Debug.Log(responseMessage.message);
             // Display the content.  
         }
 
-        public static void AddLetter(int player, int userLetters)
+        public static void AddLetter(int player, int userLetters, int failedShot)
         {
             ServerResponse responseMessage = new ServerResponse();
             AddLetterRequest requestObject = new AddLetterRequest();
@@ -139,7 +151,8 @@ namespace NetworkData
             string url = "http://swishgame.com/AppCode/AddLetter.aspx";
             WebRequest request = WebRequest.Create(url);
 
-
+            requestObject.gameID = 1;
+            requestObject.failedShot = failedShot;
             if (player == 1)
             {
                 requestObject.p1letters = userLetters;
@@ -168,7 +181,37 @@ namespace NetworkData
             // Read the content.  
             string responseFromServer = reader.ReadToEnd();
             responseMessage = JsonUtility.FromJson<ServerResponse>(responseFromServer);
-            Debug.Log(responseMessage.message);
+            // Display the content.  
+        }
+
+        public static void CopyShotResult(int result)
+        {
+            ServerResponse responseMessage = new ServerResponse();
+            CopyShotRequest requestObject = new CopyShotRequest();
+
+            string url = "http://swishgame.com/AppCode/UpdateCopyResult.aspx";
+            WebRequest request = WebRequest.Create(url);
+
+            requestObject.gameID = 1;
+            requestObject.shotStatus = result;
+
+            string jsonString = JsonUtility.ToJson(requestObject);
+            byte[] data = Encoding.UTF8.GetBytes(jsonString);
+            request.Method = "POST";
+            request.ContentType = "application/json";
+            request.ContentLength = data.Length;
+            Stream dataStream = request.GetRequestStream();
+            dataStream.Write(data, 0, data.Length);
+            dataStream.Close();
+
+            WebResponse response = request.GetResponse();
+            Stream responseStream = response.GetResponseStream();
+
+            StreamReader reader = new StreamReader(responseStream);
+
+            // Read the content.  
+            string responseFromServer = reader.ReadToEnd();
+            responseMessage = JsonUtility.FromJson<ServerResponse>(responseFromServer);
             // Display the content.  
         }
     }

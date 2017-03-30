@@ -17,7 +17,7 @@ namespace NetworkData
         {
             string url = "http://swishgame.com/AppCode/GetShotData.aspx";
             WebRequest request = WebRequest.Create(url);
-            requestObject.gameID = 2;
+            requestObject.gameID = 1;
             string jsonString = JsonUtility.ToJson(requestObject);
             byte[] data = Encoding.UTF8.GetBytes(jsonString);
             request.Method = "POST";
@@ -49,14 +49,15 @@ namespace NetworkData
         public int p2score;
         public int p1letters;
         public int p2letters;
-        public int locationX;
-        public int locationZ;
+        public float locationX;
+        public float locationZ;
         public int currentTurnOwner;
         public int turnNo;
         public int shotMade;
         public float ballX;
         public float ballY;
         public float ballZ;
+        public int shotStatus;
         public string error;
     }
 

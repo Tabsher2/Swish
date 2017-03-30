@@ -27,7 +27,6 @@ public class NotificationController : MonoBehaviour {
 
     public void NotifyLetterReceived(string word)
     {
-        Debug.Log(word);
         string temp = word.Substring(word.Length - 1);
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\t    Too bad!\n\t\t  You received: '" + temp + "'\nNow, create your own shot!";

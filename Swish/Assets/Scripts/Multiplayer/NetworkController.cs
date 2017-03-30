@@ -11,14 +11,19 @@ public class NetworkController : MonoBehaviour {
         NetworkData.SendShotData.SendMissedShot(turnOwnerId, turnNo);
     }
 
-    public static void SendMadeShot(int player, int turnOwnerId, float userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
+    public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
     {
         NetworkData.SendShotData.SendMadeShot(player, turnOwnerId, userScore, locationX, locationZ, turnNo, ballX, ballY, ballZ);
     }
 
-    public static void AddLetter(int player, int userLetters)
+    public static void AddLetter(int player, int userLetters, int failedShot)
     {
-        NetworkData.SendShotData.AddLetter(player, userLetters);
+        NetworkData.SendShotData.AddLetter(player, userLetters, failedShot);
+    }
+
+    public static void UpdateCopyResult(int result)
+    {
+        NetworkData.SendShotData.CopyShotResult(result);
     }
 
     public static NetworkData.ShotData LoadLastShot()

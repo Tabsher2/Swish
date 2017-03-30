@@ -23,9 +23,7 @@ public class GetURL : MonoBehaviour {
 
         // Read the content.  
         string responseFromServer = reader.ReadToEnd();
-        Debug.Log(responseFromServer);
         responseMessage = JsonUtility.FromJson<TestClass>(responseFromServer);
-        Debug.Log(responseMessage.message);
         // Display the content.  
 
     }

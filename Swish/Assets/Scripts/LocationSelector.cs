@@ -20,24 +20,31 @@ public class LocationSelector : MonoBehaviour {
     public static bool slideCameraDown = false;
     public static bool allowSelection = false;
     private static bool displayInitialBanner = true;
+    int currentMessage = 1;
+    int t = 0;
 
     Vector3 clickPos;
 
 	// Use this for initialization
 	void Start () {
-		
-	}
+        bannerText.text = "Tap on the court to select a location.";
+    }
 	
 	// Update is called once per frame
 	void Update () {
         if (slideCameraDown)
             CameraController.MoveToSelectedSpot(Camera.main.transform.position, Camera.main.transform.eulerAngles, cameraLocation, cameraAngle);
 
-        if (allowSelection && displayInitialBanner)
+        if (allowSelection && displayInitialBanner && !GameController.slideCameraUp)
         {
             bannerPanel.SetActive(true);
             bannerButton.SetActive(false);
-            bannerText.text = "   You are aiming for the top hoop.";
+            t++;
+            if (t == 90)
+            {
+                t = 0;
+                SwitchMessage();
+            }
         }
 	}
 
@@ -45,7 +52,7 @@ public class LocationSelector : MonoBehaviour {
     {
         if (tokenDown)
             Destroy(tokenInstance);
-        if (allowSelection)
+        if (allowSelection && !GameController.slideCameraUp)
         {
             clickPos = Input.mousePosition;
             clickPos.x -= (Screen.width / 2);
@@ -91,5 +98,19 @@ public class LocationSelector : MonoBehaviour {
     public float CalculateDistance(Vector3 v1, Vector3 v2)
     {
         return Mathf.Sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.z - v2.z) * (v1.z - v2.z));
+    }
+
+    public void SwitchMessage()
+    {
+        if (currentMessage == 1)
+        {
+            bannerText.text = "   You are aiming for the top hoop.";
+            currentMessage = 2;
+        }
+        else
+        {
+            bannerText.text = "Tap on the court to select a location.";
+            currentMessage = 1;
+        }
     }
 }

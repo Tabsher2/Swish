@@ -16,78 +16,49 @@ public class ThrowScript : MonoBehaviour
     float startTime;
     float endTime;
     float swipeTime;
-    float swipeDistance;
-    float factor = GameController.ballStart.x / 2.8f;
+    Vector3 swipeDistance;
+    const int factor = 325;
 
     int throwDirection;
 
-    Vector3 startPos;
-    Vector3 startPosition;
+    Vector3 worldStartPos;
+    Vector3 screenStartPos;
 
     private void OnMouseDown()
     {
         startTime = Time.time;
-        startPos = Input.mousePosition;
-        startPosition = Input.mousePosition;
+        worldStartPos = Input.mousePosition;
+        screenStartPos = Input.mousePosition;
         throwDirection = (int)CameraController.GetCameraDirection();
-        switch (throwDirection)
-        {
-            case 0:
-                startPos.z = transform.position.z - Camera.main.transform.position.z;
-                break;
-            case 90:
-                startPos.x = transform.position.x - Camera.main.transform.position.x;
-                break;
-            case 180:
-                startPos.z = transform.position.z - Camera.main.transform.position.z;
-                break;
-        }
-        startPos = Camera.main.ScreenToWorldPoint(startPos);
+        //worldStartPos.z = transform.position.z - Camera.main.transform.position.z;
+        worldStartPos.x = transform.position.x - Camera.main.transform.position.x;
+        worldStartPos = Camera.main.ScreenToWorldPoint(worldStartPos);
     }
 
     private void OnMouseUp()
     {
         endTime = Time.time;
         Vector3 endPos = Input.mousePosition;
-        swipeDistance = (endPos - startPosition).magnitude;
-        switch (throwDirection)
-        {
-            case 0:
-                endPos.x = transform.position.z - Camera.main.transform.position.z;
-                break;
-            case 90:
-                endPos.z = transform.position.x - Camera.main.transform.position.x;
-                break;
-            case 180:
-                endPos.x = transform.position.z - Camera.main.transform.position.z;
-                break;
-        }
-        endPos = Camera.main.ScreenToWorldPoint(endPos);
-        Debug.Log(endPos);
+        swipeDistance = (endPos - screenStartPos);
+        //endPos.x = transform.position.z - Camera.main.transform.position.z;
+        //endPos.z = transform.position.x - Camera.main.transform.position.x;
+        //endPos = Camera.main.ScreenToWorldPoint(endPos);
         swipeTime = endTime - startTime;
-        if (swipeTime < maxTime && swipeDistance > minSwipeDist)
+        if (swipeTime < maxTime && swipeDistance.magnitude > minSwipeDist)
         {
             if (!isThrown)
             {
                 isThrown = true;
                 rb.useGravity = true;
-                Vector3 force = endPos - startPos;
-                switch (throwDirection)
-                {
-                    case 0:
-                        force.z = force.magnitude;
-                        break;
-                    case 90:
-                        force.x = force.magnitude;
-                        break;
-                    case 180:
-                        force.z = -force.magnitude;
-                        break;
-                    case 270:
-                        break;
-                }
-                force.y = force.magnitude;
-                force /= swipeTime;
+                Vector3 force = new Vector3(0, 0, 0);
+                float angleDif = Mathf.Atan(swipeDistance.x/swipeDistance.y) * Mathf.Rad2Deg;
+                float forceAngle = CameraController.GetCameraDirection() + angleDif;
+                force.z = Mathf.Cos(forceAngle * Mathf.Deg2Rad) * swipeDistance.magnitude;
+                force.x = Mathf.Sin(forceAngle * Mathf.Deg2Rad) * swipeDistance.magnitude;
+                force.y = swipeDistance.magnitude;
+                force /= factor;
+                //force /= 1.5f;
+                force /= swipeTime/2;
 
                 rb.velocity = force;
                 shotVelocity = rb.velocity;

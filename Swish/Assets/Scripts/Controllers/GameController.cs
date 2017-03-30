@@ -19,7 +19,7 @@ public class GameController : MonoBehaviour
     private int user;
     private int opponent;
     private int player;
-    private float userScore;
+    private int userScore;
     private float opponentScore;
     private string userLetters = "";
     private string opponentLetters = "";
@@ -28,6 +28,7 @@ public class GameController : MonoBehaviour
     private int turnCount = 0;
     private string userName;
     private string opponentName;
+    Camera mainCam;
 
     //UI text
     private GameObject shotText;
@@ -43,18 +44,21 @@ public class GameController : MonoBehaviour
     //Notification Listeners
     private static bool startReplay = false;
     private static bool transitionToShotSelection = false;
-    private static bool beginShotSelection = false;
     private static bool selectingShot = false;
-    public static bool showShotSelection = false;
     public static bool slideCameraUp = false;
     public static bool spotSelected = false;
+    private static bool turnCompleteMade = false;
+    private static bool turnCompleteMissed = false;
+    private static bool receivedLetter = false;
+    private static bool understand = false;
+    private static bool acknowledgeEnemy = false;
 
     //Spawn Locations
     public static Vector3 ballStart;
     public static Vector3 textStartPos = new Vector3(7f, 3f, 1f);
 
     //Ball Variables
-    private static float shotScore = 0;
+    private static int shotScore = 0;
     private static bool swish = false;
     private int remainingShots = 3;
     private bool ballInPlay = false;
@@ -73,6 +77,7 @@ public class GameController : MonoBehaviour
 
     private void Awake()
     {
+        mainCam = Camera.main;
         replayText.GetComponent<Text>().enabled = false;
     }
     // Use this for initialization
@@ -98,6 +103,7 @@ public class GameController : MonoBehaviour
         {
             if (remainingShots == 0)
             {
+                UpdateRSText();
                 ThrowScript.isThrown = true;
                 remainingShots--;
                 if (copyingShot)
@@ -112,71 +118,55 @@ public class GameController : MonoBehaviour
                     else
                     {
                         NotifyLetterReceived(userLetters);
-                        NetworkController.AddLetter(player, userLetters.Length);
-                        //Make panel tell them they got a letter
-                        //They hit okay, their shots reset to 3 and now they're taking a shot
                         UpdateLetterText();
                         if (turnCount >= 50)
                             CheckForTieBreaker();
                     }
                 }
                 else
-                {
-                    NetworkController.SendMissedShot(opponent, turnCount);
                     NotifyOwnFailure();
-                }
-                    
             }
         }
+
+        if (acknowledgeEnemy)
+        {
+            acknowledgeEnemy = false;
+            UpdateLetterText();
+            if (copyingShot)
+                NotifyCopyShot();
+            else
+                NotifyMissedShot();
+        }
+
         if (shotText != null)
             TextFade();
-
-        if (selectingShot || newBasketball.transform.position != ballStart || isReplaying)
-            ballInPlay = true;
-        else
-            ballInPlay = false;
+        if (IsBallExisting())
+        {
+            if (selectingShot || !IsBallAtStart() || isReplaying)
+                ballInPlay = true;
+            else
+                ballInPlay = false;
+        }
 
         if (KillBall())
         {
             remainingShots--;
             CreateBall();
         }
-        if (copyingShot)
-        {
-            replayShotButton.GetComponent<Image>().color = Color.white;
-            replayShotButton.GetComponent<Button>().enabled = true;
-        }
-        else
-        {
-            replayShotButton.GetComponent<Image>().color = Color.gray;
-            replayShotButton.GetComponent<Button>().enabled = false;
-        }
+
+        DetermineButtons();
+
         if (replayComplete)
             EndReplay();
-
-        if (ballInPlay)
-            DisableButtons();
-        else
-            EnableButtons();
-
-        if (notificationPanel.activeSelf == true)
-            DisableButtons();
-        else
-            EnableButtons();
-        if (isReplaying)
-            DisableButtons();
-        else
-            EnableButtons();
 
         if (slideCameraUp)
             CameraController.MoveToShotSelection(Camera.main.transform.position, Camera.main.transform.eulerAngles);
 
-        if (showShotSelection)
-            NotifyShotSelection();
-
         if (spotSelected)
         {
             ballStart = LocationSelector.selectedLocation;
+            remainingShots = 4;
+            UpdateRSText();
             newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
             spotSelected = false;
             selectingShot = false;
@@ -186,7 +176,6 @@ public class GameController : MonoBehaviour
             replayShotButton.SetActive(true);
             obstacleMenuButton.SetActive(true);
             remainingShotsText.enabled = true;
-            replayText.enabled = true;
             userLettersText.enabled = true;
             opponentLettersText.enabled = true;
         }
@@ -196,9 +185,12 @@ public class GameController : MonoBehaviour
 
     public void CreateBall()
     {
-        ResetBall();
-        newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
-        UpdateRSText();
+        if (remainingShots > 0)
+        {
+            ResetBall();
+            newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+            UpdateRSText();
+        }
     }
 
     private void ResetBall()
@@ -212,7 +204,7 @@ public class GameController : MonoBehaviour
         shotScore = 0;
     }
 
-    public static void SetMadeShot(float score, bool isSwish)
+    public static void SetMadeShot(int score, bool isSwish)
     {
         if (!isReplaying)
         {
@@ -228,6 +220,7 @@ public class GameController : MonoBehaviour
 
     private void ShotMade()
     {
+        remainingShots = -1;
         shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10,90,0));
         if (swish)
             shotText.GetComponent<TextMesh>().text = "Swish! - " + shotScore.ToString();
@@ -237,8 +230,6 @@ public class GameController : MonoBehaviour
         if (takingShot)
         {
             userScore += shotScore;
-            Vector3 ballVelocity = ThrowScript.shotVelocity;
-            NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ballVelocity.x, ballVelocity.y, ballVelocity.z);
             NotifyOwnSuccess();
         }
         else
@@ -258,6 +249,8 @@ public class GameController : MonoBehaviour
 
     private bool KillBall()
     {
+        if (!IsBallExisting())
+            return false;
         bool killball = false;
         if (newBasketball.transform.position.x > 35)
             killball = true;
@@ -307,9 +300,28 @@ public class GameController : MonoBehaviour
             takingShot = false;
             copyingShot = true;
             ballStart.x = shotData.locationX;
-            //The ball will always be vertically at 1
-            ballStart.y = 1f;
+            //The ball will always be vertically at 0.7
+            ballStart.y = 0.7f;
             ballStart.z = shotData.locationZ;
+            Vector3 hoopLocation = new Vector3(9f, 2, 0);
+            float distance = CalculateDistance(hoopLocation, ballStart);
+
+            float yAngle = Mathf.Atan(1 / distance);
+
+            float angle = Mathf.Acos((9f - ballStart.x) / distance);
+            float cameraX = Mathf.Cos(angle) * (distance + 1);
+            float cameraZ = Mathf.Sin(angle) * (distance + 1);
+            cameraX = 9f - cameraX;
+            if (ballStart.z < 0)
+            {
+                cameraZ *= -1;
+                angle *= -1;
+            }
+            mainCam.transform.position = new Vector3(cameraX, 1, cameraZ);
+            angle *= Mathf.Rad2Deg;
+            yAngle *= (-1 * Mathf.Rad2Deg);
+            mainCam.transform.eulerAngles = new Vector3(0, angle + 90, 0);
+
             replayVelocity.x = shotData.ballX;
             replayVelocity.y = shotData.ballY;
             replayVelocity.z = shotData.ballZ;
@@ -329,17 +341,24 @@ public class GameController : MonoBehaviour
             userScore = shotData.p2score;
             opponent = shotData.player1;
             player = 2;
-            PopulateLetters(shotData.p1letters, shotData.p2letters);
+            PopulateLetters(shotData.p2letters, shotData.p1letters);
         }
         NetworkData.UserData userData = NetworkController.FetchUserData(user, opponent);
         userName = userData.userName;
         opponentName = userData.opponentName;
         turnCount = shotData.turnNo;
-        UpdateLetterText();
-        if (copyingShot)
-            NotifyCopyShot();
-        else
-            NotifyMissedShot();
+        switch (shotData.shotStatus)
+        {
+            case 0:
+                acknowledgeEnemy = true;
+                break;
+            case 1:
+                NotifyEnemySuccess();
+                break;
+            case 2:
+                NotifyEnemyFailure();
+                break;
+        }
     }
 
     #region "Replay Code"
@@ -385,18 +404,33 @@ public class GameController : MonoBehaviour
     #region "Notification Code"
     public void DismissNotificationPanel()
     {
+        if (receivedLetter)
+        {
+            receivedLetter = false;
+            NetworkController.AddLetter(player, userLetters.Length, 2);
+        }
         notificationPanel.SetActive(false);
         if (startReplay)
             ShowInitialReplay();
         else if (transitionToShotSelection)
             ActivateShotSelection();
-        else if (beginShotSelection)
+        else if (turnCompleteMade)
         {
-            Destroy(notificationPanel);
-            notificationPanel = Instantiate(notificationPanel, new Vector3(0, 0, 0), Quaternion.identity);
-            AllowLocationSelection();
+            turnCompleteMade = false;
+            NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z);
+            StartCoroutine(KillApplication());
         }
-
+        else if (turnCompleteMissed)
+        {
+            turnCompleteMissed = false;
+            NetworkController.SendMissedShot(opponent, turnCount);
+            StartCoroutine(KillApplication());
+        }
+        else if (understand)
+        {
+            understand = false;
+            acknowledgeEnemy = true;
+        }
     }
 
     private void NotifyLetterReceived(string word)
@@ -405,8 +439,8 @@ public class GameController : MonoBehaviour
         notificationMessage.text = "\t\t\t    Too bad!\n\t\t  You received: '" + word.Substring(word.Length - 1) + "'\nNow, create your own shot!";
         copyingShot = false;
         takingShot = true;
-        remainingShots = 3;
-        UpdateRSText();
+        Destroy(newBasketball);
+        receivedLetter = true;
         transitionToShotSelection = true;
     }
 
@@ -429,12 +463,8 @@ public class GameController : MonoBehaviour
     {
         notificationPanel.SetActive(true);
         notificationMessage.text = opponentName + " missed their shot!\n\t\t   Create your own!";
-        //PLACEHOLDER BALLSTART CODE
-        //We need to add shotSelection Logic here after press okay
-        ballStart.x = 8.5f;
-        ballStart.y = 444f;
-        ballStart.z = 3f;
-        newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+        //Update Copy Result to a 0 for a don't care value, since you won't be copying a shot
+        NetworkController.UpdateCopyResult(0);
         transitionToShotSelection = true;
     }
 
@@ -442,31 +472,40 @@ public class GameController : MonoBehaviour
     {
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\tWay to go!\nNow, create your own shot!";
+        //Update Copy result to a 1 since you 'won' their shot
+        NetworkController.UpdateCopyResult(1);
         copyingShot = false;
         takingShot = true;
-        remainingShots = 3;
-        UpdateRSText();
+        Destroy(newBasketball);
+        transitionToShotSelection = true;
     }
 
     private void NotifyOwnSuccess()
     {
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\tGood job!\n\t\tShot Score: " + shotScore.ToString();
-        StartCoroutine(KillApplication());
+        turnCompleteMade = true;
     }
 
     private void NotifyOwnFailure()
     {
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\t   Too bad!";
-        StartCoroutine(KillApplication());
+        turnCompleteMissed = true;
     }
 
-    private void NotifyShotSelection()
+    private void NotifyEnemySuccess()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t  Tap on the court to\n\t\tselect a location.";
-        beginShotSelection = true;
+        notificationMessage.text = opponentName + " made your shot!\n\t\tTry a harder one!";
+        understand = true;
+    }
+
+    private void NotifyEnemyFailure()
+    {
+        notificationPanel.SetActive(true);
+        notificationMessage.text = opponentName + " missed your shot!\n\t\t\t  Good job!";
+        understand = true;
     }
 
     #endregion
@@ -547,25 +586,65 @@ public class GameController : MonoBehaviour
 
     #endregion
 
+    #region "Button Handling" 
+
     public void DisableButtons()
     {
+        //Prevent them from interfering with the ball
         ThrowScript.isThrown = true;
         replayShotButton.GetComponent<Image>().color = Color.gray;
         replayShotButton.GetComponent<Button>().enabled = false;
         obstacleMenuButton.GetComponent<Image>().color = Color.gray;
         obstacleMenuButton.GetComponent<Button>().enabled = false;
     }
+
     public void EnableButtons()
     {
         if (copyingShot)
         {
             replayShotButton.GetComponent<Image>().color = Color.white;
             replayShotButton.GetComponent<Button>().enabled = true;
+            obstacleMenuButton.GetComponent<Image>().color = Color.gray;
+            obstacleMenuButton.GetComponent<Button>().enabled = false;
         }
+        else
+        {
+            obstacleMenuButton.GetComponent<Image>().color = Color.white;
+            obstacleMenuButton.GetComponent<Button>().enabled = true;
+        }
+        
         ThrowScript.isThrown = false;
-        obstacleMenuButton.GetComponent<Image>().color = Color.white;
-        obstacleMenuButton.GetComponent<Button>().enabled = true;
     }
+
+    private void DetermineButtons()
+    {
+
+        if (copyingShot)
+        {
+            replayShotButton.GetComponent<Image>().color = Color.white;
+            replayShotButton.GetComponent<Button>().enabled = true;
+            obstacleMenuButton.GetComponent<Image>().color = Color.gray;
+            obstacleMenuButton.GetComponent<Button>().enabled = false;
+        }
+        else
+        {
+            replayShotButton.GetComponent<Image>().color = Color.gray;
+            replayShotButton.GetComponent<Button>().enabled = false;
+        }
+
+        if (isReplaying)
+            DisableButtons();
+        else if (notificationPanel.activeSelf)
+            DisableButtons();
+        else if (ballInPlay)
+            DisableButtons();
+        else if (LocationSelector.slideCameraDown)
+            DisableButtons();
+        else
+            EnableButtons();
+    }
+
+    #endregion
 
     private void CheckForTieBreaker()
     {
@@ -579,8 +658,24 @@ public class GameController : MonoBehaviour
 
     IEnumerator KillApplication()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         UnityEditor.EditorApplication.isPlaying = false;
+    }
+
+    private bool IsBallAtStart()
+    {
+        if (newBasketball.transform.position != ballStart)
+            return false;
+        else
+            return true;
+    }
+
+    private bool IsBallExisting()
+    {
+        if (newBasketball != null)
+            return true;
+        else
+            return false;
     }
 
     #region "Shot Selection"
@@ -596,11 +691,17 @@ public class GameController : MonoBehaviour
         userLettersText.enabled = false;
         opponentLettersText.enabled = false;
         slideCameraUp = true;
+        AllowLocationSelection();
     }
 
     private void AllowLocationSelection()
     {
         LocationSelector.allowSelection = true;
+    }
+
+    public float CalculateDistance(Vector3 v1, Vector3 v2)
+    {
+        return Mathf.Sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.z - v2.z) * (v1.z - v2.z));
     }
 
     #endregion

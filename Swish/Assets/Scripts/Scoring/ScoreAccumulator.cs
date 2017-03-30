@@ -6,7 +6,7 @@ public class ScoreAccumulator : MonoBehaviour {
 
     static List<string> hitObstacles = new List<string>();
     private static bool swish = true;
-    private static float shotScore = 0;
+    private static int shotScore = 0;
     public static List<string> usedObstacles = new List<string>();
 
 	// Use this for initialization
@@ -52,6 +52,10 @@ public class ScoreAccumulator : MonoBehaviour {
             shotScore += 150;
         if (hitObstacles.Find(x => x.Contains("Trampoline")) != null)
             shotScore += 200;
+        if (GameController.ballStart.x < -6)
+            shotScore += 100;
+        if (GameController.ballStart.x < 0)
+            shotScore += 100;
         if (swish)
             shotScore *= 2;
 
