@@ -48,7 +48,9 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CameraMotor.cs" />
      <Compile Include="Assets\Scripts\CameraSwipeManager.cs" />
+     <Compile Include="Assets\Scripts\Collision Sound\GrassSoundEffect.cs" />
      <Compile Include="Assets\Scripts\Collision Sound\SoundEffect.cs" />
+     <Compile Include="Assets\Scripts\Controllers\CameraController.cs" />
      <Compile Include="Assets\Scripts\Controllers\GameController.cs" />
      <Compile Include="Assets\Scripts\Controllers\GameControllerMenu.cs" />
      <Compile Include="Assets\Scripts\Controllers\NotificationController.cs" />
@@ -57,6 +59,7 @@
      <Compile Include="Assets\Scripts\ControllingCameraAspectScript.cs" />
      <Compile Include="Assets\Scripts\DestroyText.cs" />
      <Compile Include="Assets\Scripts\GetURL.cs" />
+     <Compile Include="Assets\Scripts\LocationSelector.cs" />
      <Compile Include="Assets\Scripts\Multiplayer\FetchUserData.cs" />
      <Compile Include="Assets\Scripts\Multiplayer\GetShotData.cs" />
      <Compile Include="Assets\Scripts\Multiplayer\NetworkController.cs" />
