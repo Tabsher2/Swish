@@ -12,6 +12,7 @@ public class GameControllerMenu : MonoBehaviour {
     public GameObject menu4Menu;
     public GameObject menu5Menu;
     public GameObject activeMenu;
+    public GameObject gameLoadingPanel;
 
     public Button practice;
 
@@ -20,6 +21,8 @@ public class GameControllerMenu : MonoBehaviour {
     public Toggle buttonHome;
     public Toggle button4;
     public Toggle button5;
+
+    bool flagSceneLoading = true; //flag to only allow one scene to load
 
 
     // Use this for initialization
@@ -77,10 +80,19 @@ public class GameControllerMenu : MonoBehaviour {
 
     }
 
+
+
     void PracticeClicked()
     {
+        gameLoadingPanel.SetActive(true);
+        practice.onClick.RemoveListener(() => PracticeClicked());
         Debug.Log("Opened");
         practice.onClick.RemoveListener(() => PracticeClicked());
-        SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        if (flagSceneLoading)
+        {
+            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+            flagSceneLoading = false;
+        }
+
     }
 }
