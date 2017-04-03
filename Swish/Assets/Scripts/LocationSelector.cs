@@ -10,6 +10,9 @@ public class LocationSelector : MonoBehaviour {
     private GameObject tokenInstance;
     private bool tokenDown = false;
 
+    public GameObject noShootZone;
+    private GameObject zoneInstance;
+
     public GameObject bannerPanel;
     public GameObject bannerButton;
     public Text bannerText;
@@ -37,6 +40,8 @@ public class LocationSelector : MonoBehaviour {
 
         if (allowSelection && displayInitialBanner && !GameController.slideCameraUp)
         {
+            if (zoneInstance == null)
+                zoneInstance = Instantiate(noShootZone, new Vector3(10, -0.53f, 0), new Quaternion(0, 0, -20, -2f));
             bannerPanel.SetActive(true);
             bannerButton.SetActive(false);
             t++;
@@ -72,23 +77,24 @@ public class LocationSelector : MonoBehaviour {
     public void SelectSpot()
     {
         Destroy(tokenInstance);
+        Destroy(zoneInstance);
         GameController.spotSelected = true;
         bannerPanel.SetActive(false);
-        Vector3 hoopLocation = new Vector3(9f, 2, 0);
+        Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
         float distance = CalculateDistance(hoopLocation, selectedLocation);
 
-        float yAngle = Mathf.Atan(1/distance);
-
-        float angle = Mathf.Acos((9f - selectedLocation.x) / distance);
+        float yAngle = Mathf.Atan(1.5f/(distance + 1));
+        float angle = Mathf.Acos((hoopLocation.x - selectedLocation.x) / distance);
         float cameraX = Mathf.Cos(angle) * (distance + 1);
         float cameraZ = Mathf.Sin(angle) * (distance + 1);
-        cameraX = 9f - cameraX;
+        float cameraY = 1 - Mathf.Tan(yAngle);
+        cameraX = hoopLocation.x - cameraX;
         if (selectedLocation.z < 0)
         {
             cameraZ *= -1;
             angle *= -1;
         }
-        cameraLocation = new Vector3(cameraX, 1, cameraZ);
+        cameraLocation = new Vector3(cameraX, cameraY, cameraZ);
         angle *= Mathf.Rad2Deg;
         yAngle *= (-1 * Mathf.Rad2Deg);
         cameraAngle = new Vector3(0, angle + 90, 0);
@@ -112,5 +118,10 @@ public class LocationSelector : MonoBehaviour {
             bannerText.text = "Tap on the court to select a location.";
             currentMessage = 1;
         }
+    }
+
+    public static float GetYangle()
+    {
+        return Camera.main.transform.eulerAngles.x;
     }
 }

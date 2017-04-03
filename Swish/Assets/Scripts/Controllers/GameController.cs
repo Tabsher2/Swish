@@ -52,6 +52,7 @@ public class GameController : MonoBehaviour
     private static bool receivedLetter = false;
     private static bool understand = false;
     private static bool acknowledgeEnemy = false;
+    public static bool disableThrow = false;
 
     //Spawn Locations
     public static Vector3 ballStart;
@@ -104,7 +105,7 @@ public class GameController : MonoBehaviour
             if (remainingShots == 0)
             {
                 UpdateRSText();
-                ThrowScript.isThrown = true;
+                disableThrow = true;
                 remainingShots--;
                 if (copyingShot)
                 {
@@ -148,7 +149,7 @@ public class GameController : MonoBehaviour
                 ballInPlay = false;
         }
 
-        if (KillBall())
+        if (ThrowScript.isThrown && IsBallExisting() && KillBall() && !isReplaying)
         {
             remainingShots--;
             CreateBall();
@@ -165,7 +166,7 @@ public class GameController : MonoBehaviour
         if (spotSelected)
         {
             ballStart = LocationSelector.selectedLocation;
-            remainingShots = 4;
+            remainingShots = 3;
             UpdateRSText();
             newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
             spotSelected = false;
@@ -201,6 +202,7 @@ public class GameController : MonoBehaviour
         ScoreAccumulator.ResetScore();
         ThrowScript.ResetThrow();
         CheckBallTimeout.ResetDeadBall();
+        BallCollision.ResetBallCounter();
         shotScore = 0;
     }
 
@@ -223,9 +225,20 @@ public class GameController : MonoBehaviour
         remainingShots = -1;
         shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10,90,0));
         if (swish)
-            shotText.GetComponent<TextMesh>().text = "Swish! - " + shotScore.ToString();
+        {
+            if (!copyingShot)
+                shotText.GetComponent<TextMesh>().text = "Swish! - " + shotScore.ToString();
+            else
+                shotText.GetComponent<TextMesh>().text = "Swish!";
+
+        }
         else
-            shotText.GetComponent<TextMesh>().text = "Made it! - " + shotScore.ToString();
+        {
+            if (!copyingShot)
+                shotText.GetComponent<TextMesh>().text = "Made it! - " + shotScore.ToString();
+            else
+                shotText.GetComponent<TextMesh>().text = "Made it!";
+        }
         MadeShot = false;
         if (takingShot)
         {
@@ -249,8 +262,7 @@ public class GameController : MonoBehaviour
 
     private bool KillBall()
     {
-        if (!IsBallExisting())
-            return false;
+        BallCollision.t--;
         bool killball = false;
         if (newBasketball.transform.position.x > 35)
             killball = true;
@@ -260,9 +272,15 @@ public class GameController : MonoBehaviour
             killball = true;
         else if (newBasketball.transform.position.z < -25)
             killball = true;
+        else if (newBasketball.transform.position.y < -1)
+            killball = true;
+        else if (newBasketball.transform.position.y > 32)
+            killball = true;
         else if (newBasketball.GetComponent<Rigidbody>().velocity == new Vector3(0, 0, 0) && newBasketball.transform.position != ballStart)
             killball = true;
         else if (CheckBallTimeout.IsBallDead())
+            killball = true;
+        else if (BallCollision.t == 0)
             killball = true;
         return killball;
 
@@ -303,24 +321,25 @@ public class GameController : MonoBehaviour
             //The ball will always be vertically at 0.7
             ballStart.y = 0.7f;
             ballStart.z = shotData.locationZ;
-            Vector3 hoopLocation = new Vector3(9f, 2, 0);
+            Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
             float distance = CalculateDistance(hoopLocation, ballStart);
 
-            float yAngle = Mathf.Atan(1 / distance);
+            float yAngle = Mathf.Atan(1.5f / (distance + 1));
 
-            float angle = Mathf.Acos((9f - ballStart.x) / distance);
+            float angle = Mathf.Acos((hoopLocation.x - ballStart.x) / distance);
             float cameraX = Mathf.Cos(angle) * (distance + 1);
             float cameraZ = Mathf.Sin(angle) * (distance + 1);
-            cameraX = 9f - cameraX;
+            float cameraY = 1 - Mathf.Tan(yAngle);
+            cameraX = hoopLocation.x - cameraX;
             if (ballStart.z < 0)
             {
                 cameraZ *= -1;
                 angle *= -1;
             }
-            mainCam.transform.position = new Vector3(cameraX, 1, cameraZ);
+            mainCam.transform.position = new Vector3(cameraX, cameraY, cameraZ);
             angle *= Mathf.Rad2Deg;
             yAngle *= (-1 * Mathf.Rad2Deg);
-            mainCam.transform.eulerAngles = new Vector3(0, angle + 90, 0);
+            mainCam.transform.LookAt(hoopLocation);
 
             replayVelocity.x = shotData.ballX;
             replayVelocity.y = shotData.ballY;
@@ -407,7 +426,7 @@ public class GameController : MonoBehaviour
         if (receivedLetter)
         {
             receivedLetter = false;
-            NetworkController.AddLetter(player, userLetters.Length, 2);
+            StartCoroutine(WaitToSend());
         }
         notificationPanel.SetActive(false);
         if (startReplay)
@@ -417,7 +436,6 @@ public class GameController : MonoBehaviour
         else if (turnCompleteMade)
         {
             turnCompleteMade = false;
-            NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z);
             StartCoroutine(KillApplication());
         }
         else if (turnCompleteMissed)
@@ -439,7 +457,7 @@ public class GameController : MonoBehaviour
         notificationMessage.text = "\t\t\t    Too bad!\n\t\t  You received: '" + word.Substring(word.Length - 1) + "'\nNow, create your own shot!";
         copyingShot = false;
         takingShot = true;
-        Destroy(newBasketball);
+        ResetBall();
         receivedLetter = true;
         transitionToShotSelection = true;
     }
@@ -476,7 +494,7 @@ public class GameController : MonoBehaviour
         NetworkController.UpdateCopyResult(1);
         copyingShot = false;
         takingShot = true;
-        Destroy(newBasketball);
+        ResetBall();
         transitionToShotSelection = true;
     }
 
@@ -484,12 +502,15 @@ public class GameController : MonoBehaviour
     {
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\tGood job!\n\t\tShot Score: " + shotScore.ToString();
+        NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z);
+        ResetBall();
         turnCompleteMade = true;
     }
 
     private void NotifyOwnFailure()
     {
         notificationPanel.SetActive(true);
+        ResetBall();
         notificationMessage.text = "\t\t\t   Too bad!";
         turnCompleteMissed = true;
     }
@@ -591,7 +612,7 @@ public class GameController : MonoBehaviour
     public void DisableButtons()
     {
         //Prevent them from interfering with the ball
-        ThrowScript.isThrown = true;
+        disableThrow = true;
         replayShotButton.GetComponent<Image>().color = Color.gray;
         replayShotButton.GetComponent<Button>().enabled = false;
         obstacleMenuButton.GetComponent<Image>().color = Color.gray;
@@ -613,7 +634,7 @@ public class GameController : MonoBehaviour
             obstacleMenuButton.GetComponent<Button>().enabled = true;
         }
         
-        ThrowScript.isThrown = false;
+        disableThrow = false;
     }
 
     private void DetermineButtons()
@@ -691,6 +712,7 @@ public class GameController : MonoBehaviour
         userLettersText.enabled = false;
         opponentLettersText.enabled = false;
         slideCameraUp = true;
+        mainCam.transform.eulerAngles = new Vector3(0, 90, 0);
         AllowLocationSelection();
     }
 
@@ -705,5 +727,11 @@ public class GameController : MonoBehaviour
     }
 
     #endregion
+
+    IEnumerator WaitToSend()
+    {
+        yield return new WaitForSeconds(2);
+        NetworkController.AddLetter(player, userLetters.Length, 2);
+    }
 
 }

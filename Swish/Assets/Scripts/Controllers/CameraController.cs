@@ -8,7 +8,7 @@ public class CameraController : MonoBehaviour {
     static float transitionDuration = 0.5f;
     static Vector3 birdView = new Vector3(0, 20, 0);
     static Vector3 satellite = new Vector3(90, 0, 270);
-    static Vector3 hoopLocation = new Vector3(10, 1, 0);
+    static Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
 
 	// Use this for initialization
 	void Start () {
@@ -36,10 +36,13 @@ public class CameraController : MonoBehaviour {
             mainCam.transform.position = Vector3.Lerp(startPos, birdView, Time.deltaTime * (Time.timeScale / transitionDuration));
         else
             mainCam.transform.position = birdView;
+
+        mainCam.transform.LookAt(new Vector3(0, 0, 0));
         if (Vector3.Distance(mainCam.transform.eulerAngles, satellite) > 0.05f)
             mainCam.transform.eulerAngles = Vector3.Slerp(startAngle, satellite, Time.deltaTime * (Time.timeScale / transitionDuration));
         else
             mainCam.transform.eulerAngles = satellite;
+
     }
 
     public static void MoveToSelectedSpot(Vector3 startPos, Vector3 startAngle, Vector3 endPos, Vector3 endAngle)
@@ -52,10 +55,11 @@ public class CameraController : MonoBehaviour {
             mainCam.transform.position = endPos;
             LocationSelector.slideCameraDown = false;
         }
-        if (Vector3.Distance(mainCam.transform.eulerAngles, endAngle) > 0.05f)
+        /*if (Vector3.Distance(mainCam.transform.eulerAngles, endAngle) > 0.05f)
             mainCam.transform.eulerAngles = Vector3.Slerp(startAngle, endAngle, Time.deltaTime * (Time.timeScale / transitionDuration));
         else
-            mainCam.transform.eulerAngles = endAngle;
+            mainCam.transform.eulerAngles = endAngle;*/
+        mainCam.transform.LookAt(hoopLocation);
     }
 
 }

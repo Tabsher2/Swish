@@ -10,6 +10,8 @@ namespace NetworkData
 {
     public class SendShotData : MonoBehaviour
     {
+        public static bool allowMenu = false;
+
 
         [Serializable]
         public class ServerResponse
@@ -141,6 +143,7 @@ namespace NetworkData
             string responseFromServer = reader.ReadToEnd();
             responseMessage = JsonUtility.FromJson<ServerResponse>(responseFromServer);
             // Display the content.  
+            allowMenu = true;
         }
 
         public static void AddLetter(int player, int userLetters, int failedShot)

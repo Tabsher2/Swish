@@ -46,19 +46,28 @@ public class ThrowScript : MonoBehaviour
         swipeTime = endTime - startTime;
         if (swipeTime < maxTime && swipeDistance.magnitude > minSwipeDist)
         {
-            if (!isThrown)
+            if (!isThrown && !GameController.disableThrow)
             {
                 isThrown = true;
                 rb.useGravity = true;
                 Vector3 force = new Vector3(0, 0, 0);
                 float angleDif = Mathf.Atan(swipeDistance.x/swipeDistance.y) * Mathf.Rad2Deg;
                 float forceAngle = CameraController.GetCameraDirection() + angleDif;
+                float yAngle = LocationSelector.GetYangle();
                 force.z = Mathf.Cos(forceAngle * Mathf.Deg2Rad) * swipeDistance.magnitude;
                 force.x = Mathf.Sin(forceAngle * Mathf.Deg2Rad) * swipeDistance.magnitude;
-                force.y = swipeDistance.magnitude;
+                Vector2 xzMagnitude = new Vector2(force.x, force.z);
+                force.y = swipeDistance.magnitude * 0.8f;
+                float oldY = force.y;
+                force.y += Mathf.Tan(yAngle * Mathf.Deg2Rad) * -1 * xzMagnitude.magnitude;
+                float ratio = oldY / force.y;
+                xzMagnitude *= ratio;
+                float newwXZMag = force.y/(Mathf.Tan(yAngle * Mathf.Deg2Rad) * -1);
+                force.z = xzMagnitude.y;
+                force.x = xzMagnitude.x;
                 force /= factor;
-                //force /= 1.5f;
-                force /= swipeTime/2;
+                force /= 1.5f;
+                force /= swipeTime/4;
 
                 rb.velocity = force;
                 shotVelocity = rb.velocity;
