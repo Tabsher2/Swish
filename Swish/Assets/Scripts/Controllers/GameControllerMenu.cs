@@ -87,8 +87,6 @@ public class GameControllerMenu : MonoBehaviour {
     {
         gameLoadingPanel.SetActive(true);
         practice.onClick.RemoveListener(() => PracticeClicked());
-        Debug.Log("Opened");
-        practice.onClick.RemoveListener(() => PracticeClicked());
         if (flagSceneLoading)
         {
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);

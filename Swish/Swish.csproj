@@ -84,6 +84,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AccountMenuCurrentStreak.cs" />
+    <Compile Include="Assets\AccountMenuEmail.cs" />
+    <Compile Include="Assets\AccountMenuGamesWon.cs" />
+    <Compile Include="Assets\AccountMenuSwishesMade.cs" />
+    <Compile Include="Assets\AccountMenuUsername.cs" />
     <Compile Include="Assets\Scripts\CameraMotor.cs" />
     <Compile Include="Assets\Scripts\CameraSwipeManager.cs" />
     <Compile Include="Assets\Scripts\Collision Sound\GrassSoundEffect.cs" />
@@ -97,6 +102,7 @@
     <Compile Include="Assets\Scripts\ControllingCameraAspectScript.cs" />
     <Compile Include="Assets\Scripts\DestroyText.cs" />
     <Compile Include="Assets\Scripts\GetURL.cs" />
+    <Compile Include="Assets\Scripts\GetUserAccount.cs" />
     <Compile Include="Assets\Scripts\LocationSelector.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\FetchUserData.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\GetShotData.cs" />
@@ -111,6 +117,7 @@
     <Compile Include="Assets\Scripts\Throw Mechanics\CheckBallTimeout.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\SwipeBall.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\ThrowScript.cs" />
+    <Compile Include="Assets\SplashScreen.cs" />
     <Compile Include="Assets\leaderBoard.cs" />
     <Compile Include="Assets\menuLeaderBoardDisplay.cs" />
   </ItemGroup>

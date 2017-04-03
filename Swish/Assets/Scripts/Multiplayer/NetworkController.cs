@@ -37,4 +37,10 @@ public class NetworkController : MonoBehaviour {
         NetworkData.UserData userData = NetworkData.FetchUserData.RetrieveUserInfo(user, opponent);
         return userData;
     }
+
+    public static NetworkData.AccountInfo FetchAccountInfo(int user)
+    {
+        NetworkData.AccountInfo userAccountInfo = NetworkData.FetchAccountInfo.RetrieveUserAccountInfo(user);
+        return userAccountInfo;
+    }
 }
