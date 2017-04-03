@@ -34,7 +34,8 @@ public class GameControllerMenu : MonoBehaviour {
         menu2Menu.SetActive(false);
         menu4Menu.SetActive(false);
         menu5Menu.SetActive(false);
-        
+
+        practice.onClick.AddListener(() => PracticeClicked());
     }
 
     void Start()
@@ -76,7 +77,7 @@ public class GameControllerMenu : MonoBehaviour {
             activeMenu = menu5Menu;
         }
 
-        practice.onClick.AddListener(() => PracticeClicked());
+        
 
     }
 
