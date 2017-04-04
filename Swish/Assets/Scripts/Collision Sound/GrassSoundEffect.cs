@@ -8,20 +8,24 @@ public class GrassSoundEffect : MonoBehaviour {
 	public AudioClip clip2;
 	private AudioSource audio;
 
+
 	private void OnCollisionEnter(Collision collision)
 	{
-		bool played = false;
 		audio = GetComponent<AudioSource> ();
-		audio.clip = clip1;
-
-		audio.Play();
+		bool played = false;
+		if (!audio.isPlaying) 
+		{ 
+			audio.clip = clip1;
+			audio.Play ();
+		}
 	}
 
 	private void OnCollisionStay(Collision collision)
 	{
 		audio = GetComponent<AudioSource> ();
-		audio.clip = clip2;
-		if (!audio.isPlaying) {
+		if (!audio.isPlaying) 
+		{
+			audio.clip = clip2;
 			audio.Play ();
 		}
 	}
