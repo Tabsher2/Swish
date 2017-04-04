@@ -17,7 +17,7 @@ namespace NetworkData
         {
             string url = "http://swishgame.com/AppCode/GetShotData.aspx";
             WebRequest request = WebRequest.Create(url);
-            requestObject.gameID = 1;
+            requestObject.gameID = GameController.gameID;
             string jsonString = JsonUtility.ToJson(requestObject);
             byte[] data = Encoding.UTF8.GetBytes(jsonString);
             request.Method = "POST";

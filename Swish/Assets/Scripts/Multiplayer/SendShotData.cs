@@ -73,7 +73,7 @@ namespace NetworkData
             requestObject.shotMade = 0;
             requestObject.currentTurnOwner = turnOwnerId;
             requestObject.turnNo = turnNo;
-            requestObject.gameID = 1;
+            requestObject.gameID = GameController.gameID;
 
             string jsonString = JsonUtility.ToJson(requestObject);
             byte[] data = Encoding.UTF8.GetBytes(jsonString);
@@ -103,7 +103,7 @@ namespace NetworkData
             string url = "http://swishgame.com/AppCode/MadeShot.aspx";
             WebRequest request = WebRequest.Create(url);
 
-            requestObject.gameID = 1;
+            requestObject.gameID = GameController.gameID;
 
             //A 1 since the user made it
             requestObject.shotMade = 1;
@@ -154,7 +154,7 @@ namespace NetworkData
             string url = "http://swishgame.com/AppCode/AddLetter.aspx";
             WebRequest request = WebRequest.Create(url);
 
-            requestObject.gameID = 1;
+            requestObject.gameID = GameController.gameID;
             requestObject.failedShot = failedShot;
             if (player == 1)
             {
@@ -195,7 +195,7 @@ namespace NetworkData
             string url = "http://swishgame.com/AppCode/UpdateCopyResult.aspx";
             WebRequest request = WebRequest.Create(url);
 
-            requestObject.gameID = 1;
+            requestObject.gameID = GameController.gameID;
             requestObject.shotStatus = result;
 
             string jsonString = JsonUtility.ToJson(requestObject);

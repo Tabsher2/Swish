@@ -14,6 +14,7 @@ public class GameController : MonoBehaviour
     public GameObject obstacleMenuButton;
 
     //Multiplayer info
+    public static int gameID = 1;
     private bool takingShot;
     private bool copyingShot;
     private int user;
