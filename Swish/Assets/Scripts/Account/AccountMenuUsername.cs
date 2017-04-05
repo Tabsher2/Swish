@@ -1,17 +1,19 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NetworkData;
 using UnityEngine.UI;
 
-public class AccountMenuCurrentStreak : MonoBehaviour {
+public class AccountMenuUsername : MonoBehaviour {
 
-    public Text winStreak;
-    public int user = 601;
+    public Text username;
+    public string user = "/liCWn1QSAx8RCfPOI+c42aXrD7tW3DyoEVXLiV+IXg=";
 
     // Use this for initialization
-    void Start()
-    {
+    void Start () {
         NetworkData.AccountInfo userAccountInfo = NetworkController.FetchAccountInfo(user);
-        winStreak.text = userAccountInfo.winStreak;
+        username.text = userAccountInfo.userName;
+
     }
+	
 }

@@ -24,7 +24,7 @@ namespace NetworkData
         public class MissShotRequest
         {
             public int shotMade;
-            public int currentTurnOwner;
+            public string currentTurnOwner;
             public int turnNo;
             public int gameID;
         }
@@ -37,7 +37,7 @@ namespace NetworkData
             public int p2score;
             public float locationX;
             public float locationZ;
-            public int currentTurnOwner;
+            public string currentTurnOwner;
             public int turnNo;
             public int shotMade;
             public float ballX;
@@ -62,7 +62,7 @@ namespace NetworkData
         }
 
 
-        public static void SendMissedShot(int turnOwnerId, int turnNo)
+        public static void SendMissedShot(string turnOwnerId, int turnNo)
         {
             ServerResponse responseMessage = new ServerResponse();
             MissShotRequest requestObject = new MissShotRequest();
@@ -95,7 +95,7 @@ namespace NetworkData
             // Display the content.  
         }
 
-        public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
+        public static void SendMadeShot(int player, string turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
         {
             ServerResponse responseMessage = new ServerResponse();
             MadeShotRequest requestObject = new MadeShotRequest();

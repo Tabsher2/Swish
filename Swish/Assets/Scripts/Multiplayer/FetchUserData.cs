@@ -19,8 +19,8 @@ namespace NetworkData
     [Serializable]
     public class PlayerInfo
     {
-        public int user;
-        public int opponent;
+        public string user;
+        public string opponent;
     }
 
     public class FetchUserData : MonoBehaviour
@@ -29,7 +29,7 @@ namespace NetworkData
         private static UserData responseMessage = new UserData();
         private static PlayerInfo requestObject = new PlayerInfo();
 
-        public static UserData RetrieveUserInfo(int user, int opponent)
+        public static UserData RetrieveUserInfo(string user, string opponent)
         {
             string url = "http://swishgame.com/AppCode/GetUserData.aspx";
             WebRequest request = WebRequest.Create(url);

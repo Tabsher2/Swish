@@ -6,12 +6,12 @@ using System;
 
 public class NetworkController : MonoBehaviour {
 
-    public static void SendMissedShot(int turnOwnerId, int turnNo)
+    public static void SendMissedShot(string turnOwnerId, int turnNo)
     {
         NetworkData.SendShotData.SendMissedShot(turnOwnerId, turnNo);
     }
 
-    public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
+    public static void SendMadeShot(int player, string turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
     {
         NetworkData.SendShotData.SendMadeShot(player, turnOwnerId, userScore, locationX, locationZ, turnNo, ballX, ballY, ballZ);
     }
@@ -32,13 +32,13 @@ public class NetworkController : MonoBehaviour {
         return shotData;
     }
 
-    public static NetworkData.UserData FetchUserData(int user, int opponent)
+    public static NetworkData.UserData FetchUserData(string user, string opponent)
     {
         NetworkData.UserData userData = NetworkData.FetchUserData.RetrieveUserInfo(user, opponent);
         return userData;
     }
 
-    public static NetworkData.AccountInfo FetchAccountInfo(int user)
+    public static NetworkData.AccountInfo FetchAccountInfo(string user)
     {
         NetworkData.AccountInfo userAccountInfo = NetworkData.FetchAccountInfo.RetrieveUserAccountInfo(user);
         return userAccountInfo;

@@ -12,7 +12,7 @@ namespace NetworkData
     [Serializable]
     public class UserId
     {
-        public int user;
+        public string user;
     }
 
     [Serializable]
@@ -32,7 +32,7 @@ namespace NetworkData
         private static AccountInfo responseMessage = new AccountInfo();
         private static UserId requestObject = new UserId();
 
-        public static AccountInfo RetrieveUserAccountInfo(int user)
+        public static AccountInfo RetrieveUserAccountInfo(string user)
         {
             string url = "http://swishgame.com/AppCode/GetUserAccount.aspx";
             WebRequest request = WebRequest.Create(url);
