@@ -76,11 +76,16 @@
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Current Games\CurrentGameCaller.cs" />
+    <Compile Include="Assets\Current Games\GetCurrentGames.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuCurrentStreak.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuEmail.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuGamesWon.cs" />

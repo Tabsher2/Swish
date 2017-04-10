@@ -15,6 +15,7 @@ public class GameControllerMenu : MonoBehaviour {
     public GameObject gameLoadingPanel;
 
     public Button practice;
+    public Button play;
 
     public Toggle button1;
     public Toggle button2;
@@ -36,6 +37,7 @@ public class GameControllerMenu : MonoBehaviour {
         menu5Menu.SetActive(false);
 
         practice.onClick.AddListener(() => PracticeClicked());
+        play.onClick.AddListener(() => PlayClicked());
     }
 
     void Start()
@@ -87,11 +89,18 @@ public class GameControllerMenu : MonoBehaviour {
     {
         gameLoadingPanel.SetActive(true);
         practice.onClick.RemoveListener(() => PracticeClicked());
-        if (flagSceneLoading)
-        {
-            SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
-            flagSceneLoading = false;
-        }
+     
+        SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+     
+
+    }
+    void PlayClicked()
+    {
+        gameLoadingPanel.SetActive(true);
+        play.onClick.RemoveListener(() => PlayClicked());
+
+        SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+
 
     }
 }
