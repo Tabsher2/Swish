@@ -6,12 +6,12 @@ using UnityEngine.UI;
 public class AccountMenuSwishesMade : MonoBehaviour {
 
     public Text swishesMade;
-    public string user = "/liCWn1QSAx8RCfPOI+c42aXrD7tW3DyoEVXLiV+IXg=";
+    public int user = 4;
 
     // Use this for initialization
     void Start()
     {
         NetworkData.AccountInfo userAccountInfo = NetworkController.FetchAccountInfo(user);
-        swishesMade.text = userAccountInfo.swishesMade;
+        swishesMade.text = userAccountInfo.swishesMade.ToString();
     }
 }

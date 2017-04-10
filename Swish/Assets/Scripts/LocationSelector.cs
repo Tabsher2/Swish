@@ -41,7 +41,7 @@ public class LocationSelector : MonoBehaviour {
         if (allowSelection && displayInitialBanner && !GameController.slideCameraUp)
         {
             if (zoneInstance == null)
-                zoneInstance = Instantiate(noShootZone, new Vector3(10, -0.53f, 0), new Quaternion(0, 0, -20, -2f));
+                zoneInstance = Instantiate(noShootZone, new Vector3(10f, -0.45f, 0), new Quaternion(0, 0, 0.3f, -1.7f));
             bannerPanel.SetActive(true);
             bannerButton.SetActive(false);
             t++;
@@ -65,7 +65,7 @@ public class LocationSelector : MonoBehaviour {
             float ourX = (clickPos.y / (0.435f * Screen.height)) * 10;
             float ourZ = -(clickPos.x / (0.325f * Screen.width)) * 5;
             selectedLocation = new Vector3(ourX, 0.7f, ourZ);
-            tokenInstance = Instantiate(selectionToken, new Vector3(ourX, 0, ourZ), Quaternion.identity);
+            tokenInstance = Instantiate(selectionToken, new Vector3(ourX, 0.08f, ourZ), Quaternion.identity);
             tokenDown = true;
             displayInitialBanner = false;
             bannerPanel.SetActive(true);

@@ -43,15 +43,15 @@ namespace NetworkData
     [Serializable]
     public class ShotData
     {
-        public string player1;
-        public string player2;
+        public int player1;
+        public int player2;
         public int p1score;
         public int p2score;
         public int p1letters;
         public int p2letters;
         public float locationX;
         public float locationZ;
-        public string currentTurnOwner;
+        public int currentTurnOwner;
         public int turnNo;
         public int shotMade;
         public float ballX;

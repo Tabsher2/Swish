@@ -12,7 +12,7 @@ namespace NetworkData
     [Serializable]
     public class UserId
     {
-        public string user;
+        public int user;
     }
 
     [Serializable]
@@ -20,9 +20,9 @@ namespace NetworkData
     {
         public string userName;
         public string userEmail;
-        public string gamesWon;
-        public string swishesMade;
-        public string winStreak;
+        public int gamesWon;
+        public int swishesMade;
+        public int winStreak;
         public string error;
     }
 
@@ -32,7 +32,7 @@ namespace NetworkData
         private static AccountInfo responseMessage = new AccountInfo();
         private static UserId requestObject = new UserId();
 
-        public static AccountInfo RetrieveUserAccountInfo(string user)
+        public static AccountInfo RetrieveUserAccountInfo(int user)
         {
             string url = "http://swishgame.com/AppCode/GetUserAccount.aspx";
             WebRequest request = WebRequest.Create(url);
@@ -56,9 +56,6 @@ namespace NetworkData
             responseMessage = JsonUtility.FromJson<AccountInfo>(responseFromServer);
             responseMessage.userName = responseMessage.userName.Trim();
             responseMessage.userEmail = responseMessage.userEmail.Trim();
-            responseMessage.gamesWon = responseMessage.gamesWon.Trim();
-            responseMessage.swishesMade = responseMessage.swishesMade.Trim();
-            responseMessage.winStreak = responseMessage.winStreak.Trim();
             return responseMessage;
             // Display the content.  
         }

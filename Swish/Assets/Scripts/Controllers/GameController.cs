@@ -13,12 +13,14 @@ public class GameController : MonoBehaviour
     public GameObject obstacleMenu;
     public GameObject obstacleMenuButton;
 
+    private float gameTime;
+
     //Multiplayer info
-    public static int gameID = 2;
+    public static int gameID = 1;
     private bool takingShot;
     private bool copyingShot;
-    private string user;
-    private string opponent;
+    private int user;
+    private int opponent;
     private int player;
     private int userScore;
     private float opponentScore;
@@ -54,6 +56,7 @@ public class GameController : MonoBehaviour
     private static bool understand = false;
     private static bool acknowledgeEnemy = false;
     public static bool disableThrow = false;
+    private static bool gameLoss = false;
 
     //Spawn Locations
     public static Vector3 ballStart;
@@ -114,8 +117,10 @@ public class GameController : MonoBehaviour
                     GiveLetter();
                     if (userLetters.Length == 5)
                     {
+                        NetworkController.AddLetter(player, userLetters.Length, 0);
                         //Inform the user they lost, update the database accordingly, and end.
-                        GameOver();
+                        UpdateLetterText();
+                        NotifyLoss();
                     }
                     else
                     {
@@ -152,6 +157,8 @@ public class GameController : MonoBehaviour
 
         if (ThrowScript.isThrown && IsBallExisting() && KillBall() && !isReplaying)
         {
+            if (remainingShots == 3)
+                NetworkController.UpdateShotStreak(user, 0);
             remainingShots--;
             CreateBall();
         }
@@ -223,6 +230,8 @@ public class GameController : MonoBehaviour
 
     private void ShotMade()
     {
+        if (remainingShots == 3)
+            NetworkController.UpdateShotStreak(user, 1);
         remainingShots = -1;
         shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10,90,0));
         if (swish)
@@ -232,6 +241,7 @@ public class GameController : MonoBehaviour
             else
                 shotText.GetComponent<TextMesh>().text = "Swish!";
 
+            NetworkController.AddSwish(user);
         }
         else
         {
@@ -450,6 +460,11 @@ public class GameController : MonoBehaviour
             understand = false;
             acknowledgeEnemy = true;
         }
+        if (gameLoss)
+        {
+            gameLoss = false;
+            GameOver();
+        }
     }
 
     private void NotifyLetterReceived(string word)
@@ -528,6 +543,13 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationMessage.text = opponentName + " missed your shot!\n\t\t\t  Good job!";
         understand = true;
+    }
+
+    private void NotifyLoss()
+    {
+        notificationPanel.SetActive(true);
+        notificationMessage.text = "\t\t\tGame Over!\n\t\t\t  You Lost!";
+        gameLoss = true;
     }
 
     #endregion
@@ -675,7 +697,8 @@ public class GameController : MonoBehaviour
 
     private void GameOver()
     {
-
+        NetworkController.UpdateGameEnd(user, userScore, 0, userLetters.Length);
+        StartCoroutine(KillApplication());
     }
 
     IEnumerator KillApplication()
@@ -733,6 +756,13 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         NetworkController.AddLetter(player, userLetters.Length, 2);
+    }
+
+    private void OnApplicationQuit()
+    {
+        gameTime = Time.realtimeSinceStartup;
+        gameTime /= (60 * 60);
+        NetworkController.UpdateTime(user, gameTime);
     }
 
 }
