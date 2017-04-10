@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class BallCollision : MonoBehaviour {
 
-    public static int t = 300;
+    public static int t = 600;
 
 	// Use this for initialization
 	void Start () {
@@ -17,11 +17,11 @@ public class BallCollision : MonoBehaviour {
 
     private void OnCollisionEnter(Collision collision)
     {
-        t = 300;
+        t = 600;
     }
 
     public static void ResetBallCounter()
     {
-        t = 300;
+        t = 600;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 
@@ -23,12 +24,12 @@ public class GameController : MonoBehaviour
     private int opponent;
     private int player;
     private int userScore;
-    private float opponentScore;
+    private int opponentScore;
     private string userLetters = "";
     private string opponentLetters = "";
     private float locationX;
     private float locationZ;
-    private int turnCount = 0;
+    private int turnCount;
     private string userName;
     private string opponentName;
     Camera mainCam;
@@ -57,6 +58,11 @@ public class GameController : MonoBehaviour
     private static bool acknowledgeEnemy = false;
     public static bool disableThrow = false;
     private static bool gameLoss = false;
+    private static bool gameWin = false;
+    private static bool gameTie = false;
+    private static bool sendVictory = false;
+    private static bool maxRounds = false;
+    
 
     //Spawn Locations
     public static Vector3 ballStart;
@@ -118,6 +124,7 @@ public class GameController : MonoBehaviour
                     if (userLetters.Length == 5)
                     {
                         NetworkController.AddLetter(player, userLetters.Length, 0);
+                        NetworkController.UpdateCopyResult(2);
                         //Inform the user they lost, update the database accordingly, and end.
                         UpdateLetterText();
                         NotifyLoss();
@@ -188,8 +195,6 @@ public class GameController : MonoBehaviour
             userLettersText.enabled = true;
             opponentLettersText.enabled = true;
         }
-
-
     }
 
     public void CreateBall()
@@ -358,9 +363,11 @@ public class GameController : MonoBehaviour
         }
         //The following details must change everytime
         user = shotData.currentTurnOwner;
+        turnCount = shotData.turnNo;
         if (user == shotData.player1)
         {
             userScore = shotData.p1score;
+            opponentScore = shotData.p2score;
             opponent = shotData.player2;
             player = 1;
             PopulateLetters(shotData.p1letters, shotData.p2letters);
@@ -369,14 +376,15 @@ public class GameController : MonoBehaviour
         else
         {
             userScore = shotData.p2score;
+            opponentScore = shotData.p1score;
             opponent = shotData.player1;
             player = 2;
             PopulateLetters(shotData.p2letters, shotData.p1letters);
         }
+        UpdateLetterText();
         NetworkData.UserData userData = NetworkController.FetchUserData(user, opponent);
         userName = userData.userName;
         opponentName = userData.opponentName;
-        turnCount = shotData.turnNo;
         switch (shotData.shotStatus)
         {
             case 0:
@@ -389,6 +397,12 @@ public class GameController : MonoBehaviour
                 NotifyEnemyFailure();
                 break;
         }
+
+        if (player == 1 && !copyingShot && turnCount >= 50)
+            CheckForTieBreaker();
+
+        if (player == 2 && turnCount >= 50)
+            CheckForTieBreaker();
     }
 
     #region "Replay Code"
@@ -447,23 +461,38 @@ public class GameController : MonoBehaviour
         else if (turnCompleteMade)
         {
             turnCompleteMade = false;
-            StartCoroutine(KillApplication());
+            ReturnToMenu();
         }
         else if (turnCompleteMissed)
         {
             turnCompleteMissed = false;
             NetworkController.SendMissedShot(opponent, turnCount);
-            StartCoroutine(KillApplication());
+            ReturnToMenu();
         }
         else if (understand)
         {
             understand = false;
             acknowledgeEnemy = true;
         }
-        if (gameLoss)
+        else if (gameLoss)
         {
             gameLoss = false;
-            GameOver();
+            GameOver(0);
+        }
+        else if (gameWin)
+        {
+            gameWin = false;
+            NotifyVictory();
+        }
+        else if (sendVictory)
+        {
+            sendVictory = false;
+            GameOver(1);
+        }
+        else if (gameTie)
+        {
+            gameTie = false;
+            GameOver(2);
         }
     }
 
@@ -488,7 +517,7 @@ public class GameController : MonoBehaviour
     private void NotifyCopyShot()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = opponentName + " made their shot!";
+        notificationMessage.text = "\t\t\t  " + opponentName + "\nmade their shot!";
         startReplay = true;
         newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
     }
@@ -496,7 +525,7 @@ public class GameController : MonoBehaviour
     private void NotifyMissedShot()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = opponentName + " missed their shot!\n\t\t   Create your own!";
+        notificationMessage.text = "\t\t\t  " + opponentName + "\nmissed their shot!\n\t\t   Create your own!";
         //Update Copy Result to a 0 for a don't care value, since you won't be copying a shot
         NetworkController.UpdateCopyResult(0);
         transitionToShotSelection = true;
@@ -534,22 +563,54 @@ public class GameController : MonoBehaviour
     private void NotifyEnemySuccess()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = opponentName + " made your shot!\n\t\tTry a harder one!";
+        notificationMessage.text = "\t\t\t  " + opponentName + "\n\t\tmade your shot!\n\t\tTry a harder one!";
         understand = true;
     }
 
     private void NotifyEnemyFailure()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = opponentName + " missed your shot!\n\t\t\t  Good job!";
-        understand = true;
+        notificationMessage.text = "\t\t\t  " + opponentName + "\n\t\tmissed your shot!\n\t\t\t  Good job!";
+        if (opponentLetters.Length == 5)
+            gameWin = true;
+        else
+            understand = true;
     }
 
     private void NotifyLoss()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\tGame Over!\n\t\t\t  You Lost!";
+        int currency = (userScore / 500) + 1;
+        if (maxRounds)
+        {
+            notificationMessage.text = "\tMax Turn Reached!\n\t\t\t  You Lost!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t You earned " + currency + " coins!";
+            maxRounds = false;
+        }
+        else
+            notificationMessage.text = "\t\t\t  You Lost!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t You earned " + currency + " coins!";
         gameLoss = true;
+    }
+
+    private void NotifyVictory()
+    {
+        notificationPanel.SetActive(true);
+        int currency = (userScore / 500) + 5;
+        if (maxRounds)
+        {
+            notificationMessage.text = "\tMax Turn Reached!\n\t\t\t  You Won!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t  You earned " + currency + " coins!";
+            maxRounds = false;
+        }
+        else
+            notificationMessage.text = "\t\t\t  You Won!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t  You earned " + currency + " coins!";
+        sendVictory = true;
+    }
+
+    private void NotifyTie()
+    {
+        notificationPanel.SetActive(true);
+        int currency = (userScore / 500) + 5;
+        notificationMessage.text = "\tMax Turn Reached!\n\t\t\t  It's a Tie!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t  You earned " + currency + " coins!";
+        gameTie = true;
     }
 
     #endregion
@@ -575,6 +636,9 @@ public class GameController : MonoBehaviour
             case 4:
                 userLetters = "SWIS";
                 break;
+            case 5:
+                userLetters = "SWISH";
+                break;
         }
         switch (o)
         {
@@ -592,6 +656,9 @@ public class GameController : MonoBehaviour
                 break;
             case 4:
                 opponentLetters = "SWIS";
+                break;
+            case 5:
+                opponentLetters = "SWISH";
                 break;
         }
     }
@@ -692,19 +759,20 @@ public class GameController : MonoBehaviour
 
     private void CheckForTieBreaker()
     {
-
+        maxRounds = true;
+        if (userScore > opponentScore)
+            NotifyVictory();
+        else if (userScore < opponentScore)
+            NotifyLoss();
+        else if (userScore == opponentScore)
+            NotifyTie();
     }
 
-    private void GameOver()
+    private void GameOver(int result)
     {
-        NetworkController.UpdateGameEnd(user, userScore, 0, userLetters.Length);
-        StartCoroutine(KillApplication());
-    }
-
-    IEnumerator KillApplication()
-    {
-        yield return new WaitForSeconds(1);
-        UnityEditor.EditorApplication.isPlaying = false;
+        NetworkController.UpdateGameEnd(user, userScore, result, userLetters.Length);
+        NetworkController.SendMissedShot(opponent, turnCount);
+        ReturnToMenu();
     }
 
     private bool IsBallAtStart()
@@ -756,6 +824,7 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         NetworkController.AddLetter(player, userLetters.Length, 2);
+        NetworkController.UpdateCopyResult(2);
     }
 
     private void OnApplicationQuit()
@@ -763,6 +832,11 @@ public class GameController : MonoBehaviour
         gameTime = Time.realtimeSinceStartup;
         gameTime /= (60 * 60);
         NetworkController.UpdateTime(user, gameTime);
+    }
+
+    private void ReturnToMenu()
+    {
+        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
 
 }
