@@ -60,10 +60,49 @@ public class LocationSelector : MonoBehaviour {
         if (allowSelection && !GameController.slideCameraUp)
         {
             clickPos = Input.mousePosition;
-            clickPos.x -= (Screen.width / 2);
-            clickPos.y -= (Screen.height / 2);
-            float ourX = (clickPos.y / (0.435f * Screen.height)) * 10;
-            float ourZ = -(clickPos.x / (0.325f * Screen.width)) * 5;
+            double aspectRatio = (double)Screen.width / (double)Screen.height;
+            float ourX;
+            float ourZ;
+            //16x9
+            if (aspectRatio <= 0.58)
+            {
+                clickPos.x -= (Screen.width / 2);
+                clickPos.y -= (Screen.height / 2);
+                ourX = ((clickPos.y / (0.435f * Screen.height)) * 10)-0.044f;
+                ourZ = -(clickPos.x / (0.386f * Screen.width)) * 5;
+            }
+            //5x3
+            else if (aspectRatio <= 0.615)
+            {
+                clickPos.x -= (Screen.width / 2);
+                clickPos.y -= (Screen.height / 2);
+                ourX = ((clickPos.y / (0.435f * Screen.height)) * 10) - 0.044f;
+                ourZ = -(clickPos.x / (0.364f * Screen.width)) * 5;
+            }
+            //8x5
+            else if (aspectRatio <= 0.641)
+            {
+                clickPos.x -= (Screen.width / 2);
+                clickPos.y -= (Screen.height / 2);
+                ourX = ((clickPos.y / (0.435f * Screen.height)) * 10) - 0.044f;
+                ourZ = -(clickPos.x / (0.349f * Screen.width)) * 5;
+            }
+            //3x2
+            else if (aspectRatio <= 0.708)
+            {
+                clickPos.x -= (Screen.width / 2);
+                clickPos.y -= (Screen.height / 2);
+                ourX = ((clickPos.y / (0.435f * Screen.height)) * 10) - 0.044f;
+                ourZ = -(clickPos.x / (0.325f * Screen.width)) * 5;
+            }
+            //4x3
+            else
+            {
+                clickPos.x -= (Screen.width / 2);
+                clickPos.y -= (Screen.height / 2);
+                ourX = ((clickPos.y / (0.435f * Screen.height)) * 10) - 0.044f;
+                ourZ = -(clickPos.x / (0.29f * Screen.width)) * 5;
+            }
             selectedLocation = new Vector3(ourX, 0.7f, ourZ);
             tokenInstance = Instantiate(selectionToken, new Vector3(ourX, 0.08f, ourZ), Quaternion.identity);
             tokenDown = true;
