@@ -58,6 +58,7 @@ namespace NetworkData
         public float ballY;
         public float ballZ;
         public int shotStatus;
+        public int gameLength;
         public string error;
     }
 

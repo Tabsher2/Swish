@@ -17,7 +17,7 @@ public class GameController : MonoBehaviour
     private float gameTime;
 
     //Multiplayer info
-    public static int gameID = 1;
+    public static int gameID = 2;
     private bool takingShot;
     private bool copyingShot;
     private int user;
@@ -32,6 +32,7 @@ public class GameController : MonoBehaviour
     private int turnCount;
     private string userName;
     private string opponentName;
+    private int gameLength;
     Camera mainCam;
 
     //UI text
@@ -120,11 +121,22 @@ public class GameController : MonoBehaviour
                 if (copyingShot)
                 {
                     //Give the User a Letter
-                    GiveLetter();
-                    if (userLetters.Length == 5)
+                    switch (gameLength)
                     {
-                        NetworkController.AddLetter(player, userLetters.Length, 0);
-                        NetworkController.UpdateCopyResult(2);
+                        case 3:
+                            Give3Letter();
+                            break;
+                        case 5:
+                            Give5Letter();
+                            break;
+                        case 7:
+                            Give7Letter();
+                            break;
+                    }
+                    
+                    if (userLetters.Length == gameLength)
+                    {
+                        NetworkController.AddLetter(player, userLetters.Length, 2);
                         //Inform the user they lost, update the database accordingly, and end.
                         UpdateLetterText();
                         NotifyLoss();
@@ -189,7 +201,6 @@ public class GameController : MonoBehaviour
             LocationSelector.allowSelection = false;
 
             //Re-enable UI
-            replayShotButton.SetActive(true);
             obstacleMenuButton.SetActive(true);
             remainingShotsText.enabled = true;
             userLettersText.enabled = true;
@@ -328,11 +339,15 @@ public class GameController : MonoBehaviour
         {
             takingShot = true;
             copyingShot = false;
+            obstacleMenuButton.SetActive(true);
+            replayShotButton.SetActive(false);
         }
         else
         {
             takingShot = false;
             copyingShot = true;
+            obstacleMenuButton.SetActive(false);
+            replayShotButton.SetActive(true);
             ballStart.x = shotData.locationX;
             //The ball will always be vertically at 0.7
             ballStart.y = 0.7f;
@@ -364,13 +379,25 @@ public class GameController : MonoBehaviour
         //The following details must change everytime
         user = shotData.currentTurnOwner;
         turnCount = shotData.turnNo;
+        gameLength = shotData.gameLength;
         if (user == shotData.player1)
         {
             userScore = shotData.p1score;
             opponentScore = shotData.p2score;
             opponent = shotData.player2;
             player = 1;
-            PopulateLetters(shotData.p1letters, shotData.p2letters);
+            switch (gameLength)
+            {
+                case 3:
+                    Populate3Letters(shotData.p1letters, shotData.p2letters);
+                    break;
+                case 5:
+                    Populate5Letters(shotData.p1letters, shotData.p2letters);
+                    break;
+                case 7:
+                    Populate7Letters(shotData.p1letters, shotData.p2letters);
+                    break;
+            }
             turnCount++;
         }
         else
@@ -379,7 +406,18 @@ public class GameController : MonoBehaviour
             opponentScore = shotData.p1score;
             opponent = shotData.player1;
             player = 2;
-            PopulateLetters(shotData.p2letters, shotData.p1letters);
+            switch (gameLength)
+            {
+                case 3:
+                    Populate3Letters(shotData.p2letters, shotData.p1letters);
+                    break;
+                case 5:
+                    Populate5Letters(shotData.p2letters, shotData.p1letters);
+                    break;
+                case 7:
+                    Populate7Letters(shotData.p2letters, shotData.p1letters);
+                    break;
+            }
         }
         UpdateLetterText();
         NetworkData.UserData userData = NetworkController.FetchUserData(user, opponent);
@@ -571,7 +609,7 @@ public class GameController : MonoBehaviour
     {
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\t  " + opponentName + "\n\t\tmissed your shot!\n\t\t\t  Good job!";
-        if (opponentLetters.Length == 5)
+        if (opponentLetters.Length == gameLength)
             gameWin = true;
         else
             understand = true;
@@ -617,7 +655,7 @@ public class GameController : MonoBehaviour
 
     #region "Letter Handling"
 
-    public void PopulateLetters(int u, int o)
+    public void Populate5Letters(int u, int o)
     {
         switch (u)
         {
@@ -663,17 +701,109 @@ public class GameController : MonoBehaviour
         }
     }
 
+    public void Populate3Letters(int u, int o)
+    {
+        switch (u)
+        {
+            case 0:
+                userLetters = "";
+                break;
+            case 1:
+                userLetters = "N";
+                break;
+            case 2:
+                userLetters = "NE";
+                break;
+            case 3:
+                userLetters = "NET";
+                break;
+        }
+        switch (o)
+        {
+            case 0:
+                opponentLetters = "";
+                break;
+            case 1:
+                opponentLetters = "N";
+                break;
+            case 2:
+                opponentLetters = "NE";
+                break;
+            case 3:
+                opponentLetters = "NET";
+                break;
+        }
+    }
+
+    public void Populate7Letters(int u, int o)
+    {
+        switch (u)
+        {
+            case 0:
+                userLetters = "";
+                break;
+            case 1:
+                userLetters = "A";
+                break;
+            case 2:
+                userLetters = "AI";
+                break;
+            case 3:
+                userLetters = "AIR";
+                break;
+            case 4:
+                userLetters = "AIRB";
+                break;
+            case 5:
+                userLetters = "AIRBA";
+                break;
+            case 6:
+                userLetters = "AIRBAL";
+                break;
+            case 7:
+                userLetters = "AIRBALL";
+                break;
+        }
+        switch (o)
+        {
+            case 0:
+                opponentLetters = "";
+                break;
+            case 1:
+                opponentLetters = "A";
+                break;
+            case 2:
+                opponentLetters = "AI";
+                break;
+            case 3:
+                opponentLetters = "AIR";
+                break;
+            case 4:
+                opponentLetters = "AIRB";
+                break;
+            case 5:
+                opponentLetters = "AIRBA";
+                break;
+            case 6:
+                opponentLetters = "AIRBAL";
+                break;
+            case 7:
+                opponentLetters = "AIRBALL";
+                break;
+        }
+    }
+
     public void UpdateLetterText()
     {
         userLettersText.text = "You: \t\t\t " + userLetters;
-        for (int i = userLetters.Length; i < 5; i++)
+        for (int i = userLetters.Length; i < gameLength; i++)
             userLettersText.text += " _";  
         opponentLettersText.text = "Opponent:\t " + opponentLetters;
-        for (int i = opponentLetters.Length; i < 5; i++)
+        for (int i = opponentLetters.Length; i < gameLength; i++)
             opponentLettersText.text += " _";
     }
 
-    public void GiveLetter()
+    public void Give5Letter()
     {
         switch (userLetters.Length)
         {
@@ -691,6 +821,50 @@ public class GameController : MonoBehaviour
                 break;
             case 4:
                 userLetters = "SWISH";
+                break;
+        }
+    }
+
+    public void Give3Letter()
+    {
+        switch (userLetters.Length)
+        {
+            case 0:
+                userLetters = "N";
+                break;
+            case 1:
+                userLetters = "NE";
+                break;
+            case 2:
+                userLetters = "NET";
+                break;
+        }
+    }
+
+    public void Give7Letter()
+    {
+        switch (userLetters.Length)
+        {
+            case 0:
+                userLetters = "A";
+                break;
+            case 1:
+                userLetters = "AI";
+                break;
+            case 2:
+                userLetters = "AIR";
+                break;
+            case 3:
+                userLetters = "AIRB";
+                break;
+            case 4:
+                userLetters = "AIRBA";
+                break;
+            case 5:
+                userLetters = "AIRBAL";
+                break;
+            case 6:
+                userLetters = "AIRBALL";
                 break;
         }
     }
@@ -824,11 +998,30 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         NetworkController.AddLetter(player, userLetters.Length, 2);
-        NetworkController.UpdateCopyResult(2);
     }
 
     private void OnApplicationQuit()
     {
+        //If the user attempts the copy then quits, we count it as a failure, but it is still their turn to copy.
+        if ((copyingShot && (remainingShots != -1) && (remainingShots != 3)) || (ThrowScript.isThrown && copyingShot))
+        {
+            NetworkController.AddLetter(player, userLetters.Length+1, 2);
+        }
+        //If the user attempts their own shot and quits, we count it as a miss
+        else if ((takingShot && (remainingShots != -1) && (remainingShots != 3)) || (ThrowScript.isThrown && takingShot))
+        {
+            NetworkController.SendMissedShot(opponent, turnCount);
+        }
+        //If they exit without hitting okay on their own shot
+        else if (remainingShots == -1 && turnCompleteMissed)
+        {
+            NetworkController.SendMissedShot(opponent, turnCount);
+        }
+        //If they exit without hitting okay on copying a shot
+        else if (remainingShots == -1 && receivedLetter)
+        {
+            NetworkController.AddLetter(player, userLetters.Length + 1, 2);
+        }
         gameTime = Time.realtimeSinceStartup;
         gameTime /= (60 * 60);
         NetworkController.UpdateTime(user, gameTime);
