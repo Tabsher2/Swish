@@ -28,6 +28,8 @@ public class GameControllerMenu : MonoBehaviour {
     public Toggle button4;
     public Toggle button5;
 
+    public int user = 4;
+
     bool flagSceneLoading = true; //flag to only allow one scene to load
 
 
@@ -48,20 +50,8 @@ public class GameControllerMenu : MonoBehaviour {
     {
         buttonHome.Select();
 
-        //get users games
-        List<NetworkData.CurrentGameInfo> userGames = NetworkController.RetrieveGames(4);
+        getCurrentGames(user);
 
-        Debug.Log(NetworkController.RetrieveGames(4).Count);
-        for (int i = 0; i < userGames.Count; i++)
-        {
-            GameObject temp = Instantiate(gamePrefab) as GameObject;
-            temp.GetComponent<currentGameContentInfo>().gameID = userGames[i].gameID;
-            temp.GetComponent<currentGameContentInfo>().opponentID = userGames[i].opponentID;
-            temp.GetComponent<currentGameContentInfo>().turn = userGames[i].turn;
-            temp.GetComponent<currentGameContentInfo>().opponentName.text = Convert.ToString("Opponent: " + NetworkController.FetchAccountInfo(temp.GetComponent<currentGameContentInfo>().opponentID).userName);
-            temp.transform.SetParent(scrollViewContent.transform, false);
-            //initialize game
-        }
     }
 
     // Update is called once per frame
@@ -102,7 +92,23 @@ public class GameControllerMenu : MonoBehaviour {
 
     }
 
+    void getCurrentGames(int user)
+    {
+        //get users games
+        List<NetworkData.CurrentGameInfo> userGames = NetworkController.RetrieveGames(4);
 
+        Debug.Log(NetworkController.RetrieveGames(4).Count);
+        for (int i = 0; i < userGames.Count; i++)
+        {
+            GameObject temp = Instantiate(gamePrefab) as GameObject;
+            temp.GetComponent<currentGameContentInfo>().gameID = userGames[i].gameID;
+            temp.GetComponent<currentGameContentInfo>().opponentID = userGames[i].opponentID;
+            temp.GetComponent<currentGameContentInfo>().turn = userGames[i].turn;
+            temp.GetComponent<currentGameContentInfo>().opponentName.text = Convert.ToString("Opponent: " + NetworkController.FetchAccountInfo(temp.GetComponent<currentGameContentInfo>().opponentID).userName);
+            temp.transform.SetParent(scrollViewContent.transform, false);
+            //initialize game
+        }
+    }
 
     void PracticeClicked()
     {

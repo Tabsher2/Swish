@@ -10,11 +10,17 @@ using gameListInfo;
 public class playButtonGameList : MonoBehaviour {
     public GameObject thisObject;
     public Button playButtonListItem;
-
+    public int user = 4;
+    public int turnOwner;
     void Start()
     {
+        turnOwner = thisObject.GetComponent<currentGameContentInfo>().turn;
         Button btn = playButtonListItem.GetComponent<Button>();
         btn.onClick.AddListener(TaskOnClick);
+        if(turnOwner != user)
+        {
+            btn.gameObject.SetActive(false);
+        }
     }
 
     void TaskOnClick()
