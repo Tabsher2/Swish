@@ -90,7 +90,7 @@ public class GameControllerMenu : MonoBehaviour {
         gameLoadingPanel.SetActive(true);
         practice.onClick.RemoveListener(() => PracticeClicked());
      
-        SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
+        SceneManager.LoadScene("Practice", LoadSceneMode.Single);
      
 
     }
