@@ -5,7 +5,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using GameInfoForLoad;
-using gameListInfo;
+ 
 
 public class playButtonGameList : MonoBehaviour {
     public GameObject thisObject;
