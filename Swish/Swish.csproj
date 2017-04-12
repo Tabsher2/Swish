@@ -98,6 +98,8 @@
     <Compile Include="Assets\Scripts\Controllers\GameControllerMenu.cs" />
     <Compile Include="Assets\Scripts\Controllers\NotificationController.cs" />
     <Compile Include="Assets\Scripts\Controllers\ObstacleController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\PracticeCameraController.cs" />
+    <Compile Include="Assets\Scripts\Controllers\PracticeController.cs" />
     <Compile Include="Assets\Scripts\Controllers\ReplayController.cs" />
     <Compile Include="Assets\Scripts\DestroyText.cs" />
     <Compile Include="Assets\Scripts\GetURL.cs" />
@@ -112,7 +114,11 @@
     <Compile Include="Assets\Scripts\Multiplayer\SendShotData.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\UpdateLeaderboards.cs" />
     <Compile Include="Assets\Scripts\Obstacles\TrampolineScript.cs" />
+    <Compile Include="Assets\Scripts\PracticeLocationSelector.cs" />
     <Compile Include="Assets\Scripts\Scoring\BottomNetTrigger.cs" />
+    <Compile Include="Assets\Scripts\Scoring\Practice Scoring\PracticeBNT.cs" />
+    <Compile Include="Assets\Scripts\Scoring\Practice Scoring\PracticeScoreAccumulator.cs" />
+    <Compile Include="Assets\Scripts\Scoring\Practice Scoring\PracticeTNT.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreAccumulator.cs" />
     <Compile Include="Assets\Scripts\Scoring\TopNetTrigger.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\BallCollision.cs" />
