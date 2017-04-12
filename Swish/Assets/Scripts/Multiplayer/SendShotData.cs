@@ -5,6 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using UnityEngine;
+using GameInfoForLoad;
 
 namespace NetworkData
 {
@@ -62,7 +63,7 @@ namespace NetworkData
         }
 
 
-        public static void SendMissedShot(int turnOwnerId, int turnNo)
+        public static void SendMissedShot(int turnOwnerId, int turnNo, int gameID)
         {
             ServerResponse responseMessage = new ServerResponse();
             MissShotRequest requestObject = new MissShotRequest();
@@ -73,7 +74,7 @@ namespace NetworkData
             requestObject.shotMade = 0;
             requestObject.currentTurnOwner = turnOwnerId;
             requestObject.turnNo = turnNo;
-            requestObject.gameID = GameController.gameID;
+            requestObject.gameID = gameID; ;
 
             string jsonString = JsonUtility.ToJson(requestObject);
             byte[] data = Encoding.UTF8.GetBytes(jsonString);
@@ -95,7 +96,7 @@ namespace NetworkData
             // Display the content.  
         }
 
-        public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
+        public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ, int gameID)
         {
             ServerResponse responseMessage = new ServerResponse();
             MadeShotRequest requestObject = new MadeShotRequest();
@@ -103,7 +104,7 @@ namespace NetworkData
             string url = "http://swishgame.com/AppCode/MadeShot.aspx";
             WebRequest request = WebRequest.Create(url);
 
-            requestObject.gameID = GameController.gameID;
+            requestObject.gameID = gameID;
 
             //A 1 since the user made it
             requestObject.shotMade = 1;
@@ -146,7 +147,7 @@ namespace NetworkData
             allowMenu = true;
         }
 
-        public static void AddLetter(int player, int userLetters, int failedShot)
+        public static void AddLetter(int player, int userLetters, int failedShot, int gameID)
         {
             ServerResponse responseMessage = new ServerResponse();
             AddLetterRequest requestObject = new AddLetterRequest();
@@ -154,7 +155,7 @@ namespace NetworkData
             string url = "http://swishgame.com/AppCode/AddLetter.aspx";
             WebRequest request = WebRequest.Create(url);
 
-            requestObject.gameID = GameController.gameID;
+            requestObject.gameID = gameID;
             requestObject.failedShot = failedShot;
             if (player == 1)
             {
@@ -187,7 +188,7 @@ namespace NetworkData
             // Display the content.  
         }
 
-        public static void CopyShotResult(int result)
+        public static void CopyShotResult(int result, int gameID)
         {
             ServerResponse responseMessage = new ServerResponse();
             CopyShotRequest requestObject = new CopyShotRequest();
@@ -195,7 +196,7 @@ namespace NetworkData
             string url = "http://swishgame.com/AppCode/UpdateCopyResult.aspx";
             WebRequest request = WebRequest.Create(url);
 
-            requestObject.gameID = GameController.gameID;
+            requestObject.gameID = gameID;
             requestObject.shotStatus = result;
 
             string jsonString = JsonUtility.ToJson(requestObject);

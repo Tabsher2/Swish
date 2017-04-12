@@ -6,19 +6,19 @@ using System;
 
 public class NetworkController : MonoBehaviour {
 
-    public static void SendMissedShot(int turnOwnerId, int turnNo)
+    public static void SendMissedShot(int turnOwnerId, int turnNo, int gameID)
     {
-        NetworkData.SendShotData.SendMissedShot(turnOwnerId, turnNo);
+        NetworkData.SendShotData.SendMissedShot(turnOwnerId, turnNo, gameID);
     }
 
-    public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ)
+    public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ, int gameID)
     {
-        NetworkData.SendShotData.SendMadeShot(player, turnOwnerId, userScore, locationX, locationZ, turnNo, ballX, ballY, ballZ);
+        NetworkData.SendShotData.SendMadeShot(player, turnOwnerId, userScore, locationX, locationZ, turnNo, ballX, ballY, ballZ, gameID);
     }
 
-    public static void AddLetter(int player, int userLetters, int failedShot)
+    public static void AddLetter(int player, int userLetters, int failedShot, int gameID)
     {
-        NetworkData.SendShotData.AddLetter(player, userLetters, failedShot);
+        NetworkData.SendShotData.AddLetter(player, userLetters, failedShot, gameID);
     }
 
     public static void AddSwish(int user)
@@ -41,14 +41,14 @@ public class NetworkController : MonoBehaviour {
         NetworkData.UpdateLeaderboards.UpdateTime(user, gameTime);
     }
 
-    public static void UpdateCopyResult(int result)
+    public static void UpdateCopyResult(int result, int gameID)
     {
-        NetworkData.SendShotData.CopyShotResult(result);
+        NetworkData.SendShotData.CopyShotResult(result, gameID);
     }
 
-    public static NetworkData.ShotData LoadLastShot()
+    public static NetworkData.ShotData LoadLastShot(int gameID)
     {
-        NetworkData.ShotData shotData = NetworkData.GetShotData.RetrieveGameInfo();
+        NetworkData.ShotData shotData = NetworkData.GetShotData.RetrieveGameInfo(gameID);
         return shotData;
     }
 
@@ -62,5 +62,11 @@ public class NetworkController : MonoBehaviour {
     {
         NetworkData.AccountInfo userAccountInfo = NetworkData.FetchAccountInfo.RetrieveUserAccountInfo(user);
         return userAccountInfo;
+    }
+
+    public static List<NetworkData.CurrentGameInfo> RetrieveGames(int user)
+    {
+        List<NetworkData.CurrentGameInfo> gameInfo = GetCurrentGamesInfo.RetrieveGames(user);
+        return gameInfo;
     }
 }

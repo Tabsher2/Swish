@@ -85,7 +85,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Current Games\CurrentGameCaller.cs" />
+    <Compile Include="Assets\Current Games\GameInfo.cs" />
     <Compile Include="Assets\Current Games\GetCurrentGames.cs" />
+    <Compile Include="Assets\Current Games\currentGameContentInfo.cs" />
+    <Compile Include="Assets\Current Games\playButtonGameList.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuCurrentStreak.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuEmail.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuGamesWon.cs" />

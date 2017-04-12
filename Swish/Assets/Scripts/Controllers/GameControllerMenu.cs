@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.SceneManagement;
+using gameListInfo;
+using System;
 
 public class GameControllerMenu : MonoBehaviour {
 
@@ -13,6 +15,9 @@ public class GameControllerMenu : MonoBehaviour {
     public GameObject menu5Menu;
     public GameObject activeMenu;
     public GameObject gameLoadingPanel;
+
+    public GameObject gamePrefab;
+    public GameObject scrollViewContent;
 
     public Button practice;
     public Button play;
@@ -37,12 +42,26 @@ public class GameControllerMenu : MonoBehaviour {
         menu5Menu.SetActive(false);
 
         practice.onClick.AddListener(() => PracticeClicked());
-        play.onClick.AddListener(() => PlayClicked());
     }
 
     void Start()
     {
         buttonHome.Select();
+
+        //get users games
+        List<NetworkData.CurrentGameInfo> userGames = NetworkController.RetrieveGames(4);
+
+        Debug.Log(NetworkController.RetrieveGames(4).Count);
+        for (int i = 0; i < userGames.Count; i++)
+        {
+            GameObject temp = Instantiate(gamePrefab) as GameObject;
+            temp.GetComponent<currentGameContentInfo>().gameID = userGames[i].gameID;
+            temp.GetComponent<currentGameContentInfo>().opponentID = userGames[i].opponentID;
+            temp.GetComponent<currentGameContentInfo>().turn = userGames[i].turn;
+            temp.GetComponent<currentGameContentInfo>().opponentName.text = Convert.ToString("Opponent: " + NetworkController.FetchAccountInfo(temp.GetComponent<currentGameContentInfo>().opponentID).userName);
+            temp.transform.SetParent(scrollViewContent.transform, false);
+            //initialize game
+        }
     }
 
     // Update is called once per frame
@@ -94,13 +113,5 @@ public class GameControllerMenu : MonoBehaviour {
      
 
     }
-    void PlayClicked()
-    {
-        gameLoadingPanel.SetActive(true);
-        play.onClick.RemoveListener(() => PlayClicked());
 
-        SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
-
-
-    }
 }

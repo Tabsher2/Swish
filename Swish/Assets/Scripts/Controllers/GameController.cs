@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using GameInfoForLoad;
 
 
 public class GameController : MonoBehaviour
@@ -17,7 +18,7 @@ public class GameController : MonoBehaviour
     private float gameTime;
 
     //Multiplayer info
-    public static int gameID = 2;
+    public int gameID;
     private bool takingShot;
     private bool copyingShot;
     private int user;
@@ -34,6 +35,9 @@ public class GameController : MonoBehaviour
     private string opponentName;
     private int gameLength;
     Camera mainCam;
+
+    //Load Game info
+    public GameObject gameInfo;
 
     //UI text
     private GameObject shotText;
@@ -91,11 +95,13 @@ public class GameController : MonoBehaviour
     {
         mainCam = Camera.main;
         replayText.GetComponent<Text>().enabled = false;
+        gameID = GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID;
+
     }
     // Use this for initialization
     void Start()
     {
-        LoadShotData();
+        LoadShotData(gameID);
     }
 
     // Update is called once per frame
@@ -136,7 +142,7 @@ public class GameController : MonoBehaviour
                     
                     if (userLetters.Length == gameLength)
                     {
-                        NetworkController.AddLetter(player, userLetters.Length, 2);
+                        NetworkController.AddLetter(player, userLetters.Length, 2, gameID);
                         //Inform the user they lost, update the database accordingly, and end.
                         UpdateLetterText();
                         NotifyLoss();
@@ -331,9 +337,9 @@ public class GameController : MonoBehaviour
         usedObstacles = ScoreAccumulator.GetUsedObstacles();
     }
 
-    private void LoadShotData()
+    private void LoadShotData(int gameID)
     {
-        NetworkData.ShotData shotData = NetworkController.LoadLastShot();
+        NetworkData.ShotData shotData = NetworkController.LoadLastShot(gameID);
         //These details only change if the last shot was made or not
         if (shotData.shotMade == 0)
         {
@@ -504,7 +510,7 @@ public class GameController : MonoBehaviour
         else if (turnCompleteMissed)
         {
             turnCompleteMissed = false;
-            NetworkController.SendMissedShot(opponent, turnCount);
+            NetworkController.SendMissedShot(opponent, turnCount, gameID);
             ReturnToMenu();
         }
         else if (understand)
@@ -565,7 +571,7 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\t  " + opponentName + "\nmissed their shot!\n\t\t   Create your own!";
         //Update Copy Result to a 0 for a don't care value, since you won't be copying a shot
-        NetworkController.UpdateCopyResult(0);
+        NetworkController.UpdateCopyResult(0, gameID);
         transitionToShotSelection = true;
     }
 
@@ -574,7 +580,7 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\tWay to go!\nNow, create your own shot!";
         //Update Copy result to a 1 since you 'won' their shot
-        NetworkController.UpdateCopyResult(1);
+        NetworkController.UpdateCopyResult(1, gameID);
         copyingShot = false;
         takingShot = true;
         ResetBall();
@@ -585,7 +591,7 @@ public class GameController : MonoBehaviour
     {
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\tGood job!\n\t\tShot Score: " + shotScore.ToString();
-        NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z);
+        NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z, gameID);
         ResetBall();
         turnCompleteMade = true;
     }
@@ -945,7 +951,7 @@ public class GameController : MonoBehaviour
     private void GameOver(int result)
     {
         NetworkController.UpdateGameEnd(user, userScore, result, userLetters.Length);
-        NetworkController.SendMissedShot(opponent, turnCount);
+        NetworkController.SendMissedShot(opponent, turnCount, gameID);
         ReturnToMenu();
     }
 
@@ -997,7 +1003,7 @@ public class GameController : MonoBehaviour
     IEnumerator WaitToSend()
     {
         yield return new WaitForSeconds(2);
-        NetworkController.AddLetter(player, userLetters.Length, 2);
+        NetworkController.AddLetter(player, userLetters.Length, 2, gameID);
     }
 
     private void OnApplicationQuit()
@@ -1005,22 +1011,22 @@ public class GameController : MonoBehaviour
         //If the user attempts the copy then quits, we count it as a failure, but it is still their turn to copy.
         if ((copyingShot && (remainingShots != -1) && (remainingShots != 3)) || (ThrowScript.isThrown && copyingShot))
         {
-            NetworkController.AddLetter(player, userLetters.Length+1, 2);
+            NetworkController.AddLetter(player, userLetters.Length+1, 2, gameID);
         }
         //If the user attempts their own shot and quits, we count it as a miss
         else if ((takingShot && (remainingShots != -1) && (remainingShots != 3)) || (ThrowScript.isThrown && takingShot))
         {
-            NetworkController.SendMissedShot(opponent, turnCount);
+            NetworkController.SendMissedShot(opponent, turnCount, gameID);
         }
         //If they exit without hitting okay on their own shot
         else if (remainingShots == -1 && turnCompleteMissed)
         {
-            NetworkController.SendMissedShot(opponent, turnCount);
+            NetworkController.SendMissedShot(opponent, turnCount, gameID);
         }
         //If they exit without hitting okay on copying a shot
         else if (remainingShots == -1 && receivedLetter)
         {
-            NetworkController.AddLetter(player, userLetters.Length + 1, 2);
+            NetworkController.AddLetter(player, userLetters.Length + 1, 2, gameID);
         }
         gameTime = Time.realtimeSinceStartup;
         gameTime /= (60 * 60);

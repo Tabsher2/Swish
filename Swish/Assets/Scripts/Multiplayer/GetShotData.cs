@@ -13,11 +13,11 @@ namespace NetworkData
         private static ShotData responseMessage = new ShotData();
         private static GameInfo requestObject = new GameInfo();
 
-        public static ShotData RetrieveGameInfo()
+        public static ShotData RetrieveGameInfo(int gameID)
         {
             string url = "http://swishgame.com/AppCode/GetShotData.aspx";
             WebRequest request = WebRequest.Create(url);
-            requestObject.gameID = GameController.gameID;
+            requestObject.gameID = gameID;
             string jsonString = JsonUtility.ToJson(requestObject);
             byte[] data = Encoding.UTF8.GetBytes(jsonString);
             request.Method = "POST";

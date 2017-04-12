@@ -19,11 +19,13 @@ namespace NetworkData
     {
         public int opponentID;
         public int gameID;
+        public int turn;
 
         public CurrentGameInfo(int opponentID, int gameID)
         {
             this.opponentID = opponentID;
             this.gameID = gameID;
+            this.turn = turn;
         }
     }
 
