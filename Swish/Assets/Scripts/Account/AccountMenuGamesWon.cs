@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class AccountMenuGamesWon : MonoBehaviour {
 
     public Text gamesWon;
-    public int user = 4;
+    private int user = 4;
 
     // Use this for initialization
     void Start()

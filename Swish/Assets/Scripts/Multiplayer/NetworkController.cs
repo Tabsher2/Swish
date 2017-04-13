@@ -75,4 +75,10 @@ public class NetworkController : MonoBehaviour {
         int opponentID = NetworkData.Matchmaking.FindOpponent(user);
         return opponentID;
     }
+
+    public static List<NetworkData.friendsIDs> getFriends(int user)
+    {
+        List<NetworkData.friendsIDs> friendsNames = getFriendsList.getFriends(user);
+        return friendsNames;
+    }
 }

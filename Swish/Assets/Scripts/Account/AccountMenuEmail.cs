@@ -7,7 +7,7 @@ public class AccountMenuEmail : MonoBehaviour
 {
 
     public Text email;
-    public int user = 4;
+    private int user = 4;
 
     // Use this for initialization
     void Start()

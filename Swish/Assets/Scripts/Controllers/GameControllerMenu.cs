@@ -32,9 +32,6 @@ public class GameControllerMenu : MonoBehaviour {
 
     public int user = 4;
 
-    bool flagSceneLoading = true; //flag to only allow one scene to load
-
-
     // Use this for initialization
     void Awake ()
     {

@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class AccountMenuCurrentStreak : MonoBehaviour {
 
     public Text winStreak;
-    public int user = 4;
+    private int user = 4;
 
     // Use this for initialization
     void Start()

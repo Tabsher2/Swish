@@ -76,6 +76,9 @@
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
@@ -105,6 +108,9 @@
     <Compile Include="Assets\Scripts\Controllers\PracticeController.cs" />
     <Compile Include="Assets\Scripts\Controllers\ReplayController.cs" />
     <Compile Include="Assets\Scripts\DestroyText.cs" />
+    <Compile Include="Assets\Scripts\Friends\FriendsList.cs" />
+    <Compile Include="Assets\Scripts\Friends\friendListPlayerID.cs" />
+    <Compile Include="Assets\Scripts\Friends\getFriendsList.cs" />
     <Compile Include="Assets\Scripts\GetURL.cs" />
     <Compile Include="Assets\Scripts\LocationSelector.cs" />
     <Compile Include="Assets\Scripts\Menu\SplashScreen.cs" />
