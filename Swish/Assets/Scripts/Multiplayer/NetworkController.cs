@@ -69,4 +69,10 @@ public class NetworkController : MonoBehaviour {
         List<NetworkData.CurrentGameInfo> gameInfo = GetCurrentGamesInfo.RetrieveGames(user);
         return gameInfo;
     }
+
+    public static int FindOpponent(int user)
+    {
+        int opponentID = NetworkData.Matchmaking.FindOpponent(user);
+        return opponentID;
+    }
 }
