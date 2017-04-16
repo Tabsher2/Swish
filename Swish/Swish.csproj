@@ -76,19 +76,11 @@
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
-    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
-      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Current Games\CurrentGameCaller.cs" />
-    <Compile Include="Assets\Current Games\GameInfo.cs" />
-    <Compile Include="Assets\Current Games\GetCurrentGames.cs" />
-    <Compile Include="Assets\Current Games\currentGameContentInfo.cs" />
-    <Compile Include="Assets\Current Games\playButtonGameList.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuCurrentStreak.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuEmail.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuGamesWon.cs" />
@@ -111,6 +103,11 @@
     <Compile Include="Assets\Scripts\Friends\FriendsList.cs" />
     <Compile Include="Assets\Scripts\Friends\friendListPlayerID.cs" />
     <Compile Include="Assets\Scripts\Friends\getFriendsList.cs" />
+    <Compile Include="Assets\Scripts\GamesList\CurrentGameCaller.cs" />
+    <Compile Include="Assets\Scripts\GamesList\GameInfo.cs" />
+    <Compile Include="Assets\Scripts\GamesList\GetCurrentGames.cs" />
+    <Compile Include="Assets\Scripts\GamesList\currentGameContentInfo.cs" />
+    <Compile Include="Assets\Scripts\GamesList\playButtonGameList.cs" />
     <Compile Include="Assets\Scripts\GetURL.cs" />
     <Compile Include="Assets\Scripts\LocationSelector.cs" />
     <Compile Include="Assets\Scripts\Menu\SplashScreen.cs" />

@@ -8,6 +8,7 @@ public class FriendsList : MonoBehaviour {
 
     private int user = 4;
     public GameObject gamePrefab;
+    public GameObject gamePrefabHeader;
     public GameObject scrollViewContentFriends;
 
     // Use this for initialization
@@ -30,10 +31,15 @@ public class FriendsList : MonoBehaviour {
         //initialize games where its the users turn
         for (int i = 0; i < userFriendNames.Count; i++)
         {
-                GameObject temp = Instantiate(gamePrefab) as GameObject;
-                temp.GetComponent<friendListPlayerID>().friendIDname = userFriendsInfo[i].friendID;
-                temp.GetComponent<friendListPlayerID>().friendName.text = userFriendNames[i];
-                temp.transform.SetParent(scrollViewContentFriends.transform, false);
+            GameObject temp;
+            if (i == 0)
+                temp = Instantiate(gamePrefabHeader) as GameObject;
+            else
+                temp = Instantiate(gamePrefab) as GameObject;
+            temp.GetComponent<friendListPlayerID>().friendIDname = userFriendsInfo[i].friendID;
+            temp.GetComponent<friendListPlayerID>().friendName.text = userFriendNames[i];
+            temp.GetComponent<friendListPlayerID>().friendName.color = new Color(1,1,1,1);
+            temp.transform.SetParent(scrollViewContentFriends.transform, false);
         }
     }
 }

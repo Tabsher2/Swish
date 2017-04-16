@@ -100,10 +100,11 @@ public class GameControllerMenu : MonoBehaviour {
         Debug.Log(NetworkController.RetrieveGames(user).Count);
 
         //add "Your Turn" title
-        GameObject yourTurn = Instantiate(yourTurnPrefab) as GameObject;
-        yourTurn.transform.SetParent(scrollViewContent.transform, false);
+        //GameObject yourTurn = Instantiate(yourTurnPrefab) as GameObject;
+        //yourTurn.transform.SetParent(scrollViewContent.transform, false);
 
         //initialize games where its the users turn
+        int gamesMade = 0;
         for (int i = 0; i < userGames.Count; i++)
         {
             if(userGames[i].turn != user)
@@ -112,28 +113,39 @@ public class GameControllerMenu : MonoBehaviour {
             }
             else
             {
-                GameObject temp = Instantiate(gamePrefab) as GameObject;
+                GameObject temp;
+                if (gamesMade == 0)
+                    temp = Instantiate(yourTurnPrefab) as GameObject;
+                else
+                    temp = Instantiate(gamePrefab) as GameObject;
                 temp.GetComponent<currentGameContentInfo>().gameID = userGames[i].gameID;
                 temp.GetComponent<currentGameContentInfo>().opponentID = userGames[i].opponentID;
                 temp.GetComponent<currentGameContentInfo>().turn = userGames[i].turn;
-                temp.GetComponent<currentGameContentInfo>().opponentName.text = Convert.ToString("Opponent: " + NetworkController.FetchAccountInfo(temp.GetComponent<currentGameContentInfo>().opponentID).userName);
+                temp.GetComponent<currentGameContentInfo>().opponentName.text = NetworkController.FetchAccountInfo(temp.GetComponent<currentGameContentInfo>().opponentID).userName;
                 temp.transform.SetParent(scrollViewContent.transform, false);
+                gamesMade++;
             }
         }
 
         //add "Your Turn" title
-        GameObject oppTurn = Instantiate(opponentsTurnPrefab) as GameObject;
-        oppTurn.transform.SetParent(scrollViewContent.transform, false);
+        //GameObject oppTurn = Instantiate(opponentsTurnPrefab) as GameObject;
+        //oppTurn.transform.SetParent(scrollViewContent.transform, false);
 
         //display games where it is the opponents turn
+        gamesMade = 0;
         for (int i = 0; i < opponentsTurnGames.Count; i++)
         {
-                GameObject temp2 = Instantiate(gamePrefab) as GameObject;
-                temp2.GetComponent<currentGameContentInfo>().gameID = opponentsTurnGames[i].gameID;
-                temp2.GetComponent<currentGameContentInfo>().opponentID = opponentsTurnGames[i].opponentID;
-                temp2.GetComponent<currentGameContentInfo>().turn = opponentsTurnGames[i].turn;
-                temp2.GetComponent<currentGameContentInfo>().opponentName.text = Convert.ToString("Opponent: " + NetworkController.FetchAccountInfo(temp2.GetComponent<currentGameContentInfo>().opponentID).userName);
-                temp2.transform.SetParent(scrollViewContent.transform, false);
+            GameObject temp2;
+            if (gamesMade == 0)
+                temp2 = Instantiate(opponentsTurnPrefab) as GameObject;
+            else
+                temp2 = Instantiate(gamePrefab) as GameObject;
+            temp2.GetComponent<currentGameContentInfo>().gameID = opponentsTurnGames[i].gameID;
+            temp2.GetComponent<currentGameContentInfo>().opponentID = opponentsTurnGames[i].opponentID;
+            temp2.GetComponent<currentGameContentInfo>().turn = opponentsTurnGames[i].turn;
+            temp2.GetComponent<currentGameContentInfo>().opponentName.text = NetworkController.FetchAccountInfo(temp2.GetComponent<currentGameContentInfo>().opponentID).userName;
+            temp2.transform.SetParent(scrollViewContent.transform, false);
+            gamesMade++;
         }
     }
 
