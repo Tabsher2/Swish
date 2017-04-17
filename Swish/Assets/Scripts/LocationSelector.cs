@@ -118,6 +118,7 @@ public class LocationSelector : MonoBehaviour {
         Destroy(tokenInstance);
         Destroy(zoneInstance);
         GameController.spotSelected = true;
+        bannerButton.SetActive(false);
         bannerPanel.SetActive(false);
         Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
         float distance = CalculateDistance(hoopLocation, selectedLocation);

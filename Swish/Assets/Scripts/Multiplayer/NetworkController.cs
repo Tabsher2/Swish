@@ -4,7 +4,8 @@ using UnityEngine;
 using NetworkData;
 using System;
 
-public class NetworkController : MonoBehaviour {
+public class NetworkController : MonoBehaviour
+{
 
     public static void SendMissedShot(int turnOwnerId, int turnNo, int gameID)
     {
@@ -19,6 +20,21 @@ public class NetworkController : MonoBehaviour {
     public static void AddLetter(int player, int userLetters, int failedShot, int gameID)
     {
         NetworkData.SendShotData.AddLetter(player, userLetters, failedShot, gameID);
+    }
+
+    public static void SendObstacles(List<ScoreAccumulator.Obstacle> hitObstacles, List<ScoreAccumulator.Obstacle> placedObstacles, int gameID)
+    {
+        NetworkData.SendShotData.SendObstacles(hitObstacles, placedObstacles, gameID);
+    }
+
+    public static void LoadObstacles(int gameID)
+    {
+        NetworkData.SendShotData.LoadObstacles(gameID);
+    }
+
+    public static void ClearObstacles(int gameID)
+    {
+        NetworkData.SendShotData.ClearObstacles(gameID);
     }
 
     public static void AddSwish(int user)

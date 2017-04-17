@@ -120,6 +120,7 @@ public class PracticeLocationSelector : MonoBehaviour
     {
         Destroy(tokenInstance);
         Destroy(zoneInstance);
+        bannerButton.SetActive(false);
         PracticeController.spotSelected = true;
         bannerPanel.SetActive(false);
         Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);

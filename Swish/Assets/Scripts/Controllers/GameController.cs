@@ -9,11 +9,13 @@ using GameInfoForLoad;
 public class GameController : MonoBehaviour
 {
     private static bool MadeShot = false;
-    
+
     public GameObject Basketball;
     private GameObject newBasketball;
     public GameObject obstacleMenu;
     public GameObject obstacleMenuButton;
+    public GameObject PreviousToken;
+    private GameObject previousTokenInstance;
 
     private float gameTime;
 
@@ -67,7 +69,7 @@ public class GameController : MonoBehaviour
     private static bool gameTie = false;
     private static bool sendVictory = false;
     private static bool maxRounds = false;
-    
+
 
     //Spawn Locations
     public static Vector3 ballStart;
@@ -83,12 +85,20 @@ public class GameController : MonoBehaviour
     private static Vector3 replayVelocity;
     public Text replayText;
     private GameObject replayBall;
-    private static List<string> usedObstacles = new List<string>();
+    private static List<ScoreAccumulator.Obstacle> finalObstacles = new List<ScoreAccumulator.Obstacle>();
+    private static List<ScoreAccumulator.Obstacle> placedObstacles = new List<ScoreAccumulator.Obstacle>();
+    public static List<ScoreAccumulator.Obstacle> mapObstacles = new List<ScoreAccumulator.Obstacle>();
+    public static List<ScoreAccumulator.Obstacle> usedObstacles = new List<ScoreAccumulator.Obstacle>();
     private static bool isReplaying = false;
     private static bool replayComplete = false;
     public GameObject replayShotButton;
 
-    
+    //Obstacle variables
+    static Vector3 birdView = new Vector3(0, 20, 0);
+    static Vector3 satellite = new Vector3(90, 0, 270);
+    static Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
+
+
 
 
     private void Awake()
@@ -109,7 +119,7 @@ public class GameController : MonoBehaviour
     {
         if (Input.GetKeyDown("space"))
             Instantiate(Basketball, ballStart, Quaternion.identity);
-        
+
         if (MadeShot)
         {
             Debug.Log(ThrowScript.shotVelocity);
@@ -125,36 +135,7 @@ public class GameController : MonoBehaviour
                 disableThrow = true;
                 remainingShots--;
                 if (copyingShot)
-                {
-                    //Give the User a Letter
-                    switch (gameLength)
-                    {
-                        case 3:
-                            Give3Letter();
-                            break;
-                        case 5:
-                            Give5Letter();
-                            break;
-                        case 7:
-                            Give7Letter();
-                            break;
-                    }
-                    
-                    if (userLetters.Length == gameLength)
-                    {
-                        NetworkController.AddLetter(player, userLetters.Length, 2, gameID);
-                        //Inform the user they lost, update the database accordingly, and end.
-                        UpdateLetterText();
-                        NotifyLoss();
-                    }
-                    else
-                    {
-                        NotifyLetterReceived(userLetters);
-                        UpdateLetterText();
-                        if (turnCount >= 50)
-                            CheckForTieBreaker();
-                    }
-                }
+                    MissedCopyShot();
                 else
                     NotifyOwnFailure();
             }
@@ -247,15 +228,36 @@ public class GameController : MonoBehaviour
         }
         else
             replayComplete = true;
-       
+
     }
 
     private void ShotMade()
     {
         if (remainingShots == 3)
             NetworkController.UpdateShotStreak(user, 1);
+        if (usedObstacles.Count > 0 && copyingShot)
+        {
+            for (int i = 0; i < usedObstacles.Count; i++)
+            {
+                if (usedObstacles[i].locationX == ScoreAccumulator.hitObstacles[i].locationX && usedObstacles[i].locationZ == ScoreAccumulator.hitObstacles[i].locationZ)
+                    continue;
+                else
+                {
+                    if (remainingShots == 0)
+                    {
+                        UpdateRSText();
+                        disableThrow = true;
+                        remainingShots--;
+                        MissedCopyShot();
+                    }
+                    else
+                        CreateBall();
+                    return;
+                }
+            }
+        }
         remainingShots = -1;
-        shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10,90,0));
+        shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10, 90, 0));
         if (swish)
         {
             if (!copyingShot)
@@ -275,13 +277,17 @@ public class GameController : MonoBehaviour
         MadeShot = false;
         if (takingShot)
         {
+            List<ScoreAccumulator.Obstacle> finalObstacles = ScoreAccumulator.GetUsedObstacles();
+            List<ScoreAccumulator.Obstacle> placedObstacles = ObstacleController.GetPlacedObstacles();
+            if (placedObstacles.Count > 0)
+                NetworkController.SendObstacles(finalObstacles, placedObstacles, gameID);
             userScore += shotScore;
             NotifyOwnSuccess();
         }
         else
             NotifyCopySuccess();
-       
-}
+
+    }
 
     public void TextFade()
     {
@@ -323,18 +329,26 @@ public class GameController : MonoBehaviour
     {
         obstacleMenu.SetActive(true);
         newBasketball.SetActive(false);
+        mainCam.transform.position = birdView;
+        mainCam.transform.eulerAngles = satellite;
+        previousTokenInstance = Instantiate(PreviousToken, new Vector3(ballStart.x, 0.08f, ballStart.z), Quaternion.identity);
     }
 
     public void CloseObstacleMenu()
     {
         obstacleMenu.SetActive(false);
         newBasketball.SetActive(true);
+        mainCam.transform.position = LocationSelector.cameraLocation;
+        mainCam.transform.eulerAngles = LocationSelector.cameraAngle;
+        mainCam.transform.LookAt(hoopLocation);
+        Destroy(previousTokenInstance);
     }
 
     private void StoreShotData()
     {
-        replayVelocity = ThrowScript.shotVelocity;
-        usedObstacles = ScoreAccumulator.GetUsedObstacles();
+        finalObstacles = ScoreAccumulator.GetUsedObstacles();
+        placedObstacles = ObstacleController.GetPlacedObstacles();
+        NetworkController.SendObstacles(finalObstacles, placedObstacles, gameID);
     }
 
     private void LoadShotData(int gameID)
@@ -352,6 +366,8 @@ public class GameController : MonoBehaviour
         {
             takingShot = false;
             copyingShot = true;
+            NetworkController.LoadObstacles(gameID);
+            ObstacleController.loadObstacles = true;
             obstacleMenuButton.SetActive(false);
             replayShotButton.SetActive(true);
             ballStart.x = shotData.locationX;
@@ -451,8 +467,9 @@ public class GameController : MonoBehaviour
 
     #region "Replay Code"
 
-    public void ShowInitialReplay()
+    IEnumerator ShowInitialReplay()
     {
+        yield return new WaitForSeconds(1);
         ReplayShot();
         //Eventually popup list of what happened
     }
@@ -484,7 +501,7 @@ public class GameController : MonoBehaviour
         newBasketball.SetActive(true);
         replayText.GetComponent<Text>().enabled = false;
         if (startReplay)
-            NotifyShotRequirements();
+            startReplay = false;
     }
 
     #endregion
@@ -499,7 +516,7 @@ public class GameController : MonoBehaviour
         }
         notificationPanel.SetActive(false);
         if (startReplay)
-            ShowInitialReplay();
+            StartCoroutine(ShowInitialReplay());
         else if (transitionToShotSelection)
             ActivateShotSelection();
         else if (turnCompleteMade)
@@ -551,13 +568,6 @@ public class GameController : MonoBehaviour
         transitionToShotSelection = true;
     }
 
-    private void NotifyShotRequirements()
-    {
-        notificationPanel.SetActive(true);
-        notificationMessage.text = " Now, recreate their shot.\nYou must do the following:";
-        startReplay = false;
-    }
-
     private void NotifyCopyShot()
     {
         notificationPanel.SetActive(true);
@@ -581,6 +591,13 @@ public class GameController : MonoBehaviour
         notificationMessage.text = "\t\t\tWay to go!\nNow, create your own shot!";
         //Update Copy result to a 1 since you 'won' their shot
         NetworkController.UpdateCopyResult(1, gameID);
+        if (placedObstacles.Count > 0)
+        {
+            NetworkController.ClearObstacles(gameID);
+            placedObstacles.Clear();
+            usedObstacles.Clear();
+            DestroyObstacle.DeleteAllObstacles();
+        }
         copyingShot = false;
         takingShot = true;
         ResetBall();
@@ -592,6 +609,7 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\tGood job!\n\t\tShot Score: " + shotScore.ToString();
         NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z, gameID);
+        StoreShotData();
         ResetBall();
         turnCompleteMade = true;
     }
@@ -803,7 +821,7 @@ public class GameController : MonoBehaviour
     {
         userLettersText.text = "You: \t\t\t " + userLetters;
         for (int i = userLetters.Length; i < gameLength; i++)
-            userLettersText.text += " _";  
+            userLettersText.text += " _";
         opponentLettersText.text = "Opponent:\t " + opponentLetters;
         for (int i = opponentLetters.Length; i < gameLength; i++)
             opponentLettersText.text += " _";
@@ -903,7 +921,7 @@ public class GameController : MonoBehaviour
             obstacleMenuButton.GetComponent<Image>().color = Color.white;
             obstacleMenuButton.GetComponent<Button>().enabled = true;
         }
-        
+
         disableThrow = false;
     }
 
@@ -1004,6 +1022,13 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         NetworkController.AddLetter(player, userLetters.Length, 2, gameID);
+        if (placedObstacles.Count > 0)
+        {
+            NetworkController.ClearObstacles(gameID);
+            placedObstacles.Clear();
+            usedObstacles.Clear();
+            DestroyObstacle.DeleteAllObstacles();
+        }
     }
 
     private void OnApplicationQuit()
@@ -1011,7 +1036,7 @@ public class GameController : MonoBehaviour
         //If the user attempts the copy then quits, we count it as a failure, but it is still their turn to copy.
         if ((copyingShot && (remainingShots != -1) && (remainingShots != 3)) || (ThrowScript.isThrown && copyingShot))
         {
-            NetworkController.AddLetter(player, userLetters.Length+1, 2, gameID);
+            NetworkController.AddLetter(player, userLetters.Length + 1, 2, gameID);
         }
         //If the user attempts their own shot and quits, we count it as a miss
         else if ((takingShot && (remainingShots != -1) && (remainingShots != 3)) || (ThrowScript.isThrown && takingShot))
@@ -1036,6 +1061,38 @@ public class GameController : MonoBehaviour
     private void ReturnToMenu()
     {
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+    }
+
+    private void MissedCopyShot()
+    {
+        //Give the User a Letter
+        switch (gameLength)
+        {
+            case 3:
+                Give3Letter();
+                break;
+            case 5:
+                Give5Letter();
+                break;
+            case 7:
+                Give7Letter();
+                break;
+        }
+
+        if (userLetters.Length == gameLength)
+        {
+            NetworkController.AddLetter(player, userLetters.Length, 2, gameID);
+            //Inform the user they lost, update the database accordingly, and end.
+            UpdateLetterText();
+            NotifyLoss();
+        }
+        else
+        {
+            NotifyLetterReceived(userLetters);
+            UpdateLetterText();
+            if (turnCount >= 50)
+                CheckForTieBreaker();
+        }
     }
 
 }

@@ -22,7 +22,6 @@ public class GameControllerMenu : MonoBehaviour {
     public GameObject scrollViewContent;
 
     public Button practice;
-    public Button play;
 
     public Toggle button1;
     public Toggle button2;

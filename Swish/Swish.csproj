@@ -120,6 +120,7 @@
     <Compile Include="Assets\Scripts\Multiplayer\NetworkController.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\SendShotData.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\UpdateLeaderboards.cs" />
+    <Compile Include="Assets\Scripts\Obstacles\DestroyObstacle.cs" />
     <Compile Include="Assets\Scripts\Obstacles\TrampolineScript.cs" />
     <Compile Include="Assets\Scripts\PracticeLocationSelector.cs" />
     <Compile Include="Assets\Scripts\Scoring\BottomNetTrigger.cs" />

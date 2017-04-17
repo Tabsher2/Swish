@@ -29,8 +29,6 @@ public class PracticeController : MonoBehaviour
     private int bestShot = 0;
     private int lastShot;
 
-    static Vector3 satellite = new Vector3(90, 0, 270);
-
     //UI text
     private GameObject shotText;
     public GameObject shotTextSwish;
@@ -51,10 +49,14 @@ public class PracticeController : MonoBehaviour
     private static int shotScore = 0;
     private static bool swish = false;
     private bool ballInPlay = false;
+    private bool doubleMake = true;
 
     //Replay variables
-    private static List<string> usedObstacles = new List<string>();
 
+    //Obstacle Variables
+    static Vector3 birdView = new Vector3(0, 20, 0);
+    static Vector3 satellite = new Vector3(90, 0, 270);
+    static Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
 
     private void Awake()
     {
@@ -80,7 +82,7 @@ public class PracticeController : MonoBehaviour
         if (Input.GetKeyDown("space"))
             Instantiate(Basketball, ballStart, Quaternion.identity);
 
-        if (MadeShot)
+        if (MadeShot && doubleMake)
         {
             Debug.Log(ThrowScript.shotVelocity);
             //do things after user makes shot
@@ -146,6 +148,7 @@ public class PracticeController : MonoBehaviour
         ThrowScript.ResetThrow();
         CheckBallTimeout.ResetDeadBall();
         BallCollision.ResetBallCounter();
+        doubleMake = true;
         shotScore = 0;
     }
 
@@ -166,6 +169,7 @@ public class PracticeController : MonoBehaviour
             shotText.GetComponent<TextMesh>().text = "Made it! - " + shotScore.ToString();
         UpdateScoreText();
         MadeShot = false;
+        doubleMake = false;
     }
 
     public void TextFade()
@@ -205,6 +209,12 @@ public class PracticeController : MonoBehaviour
         newBasketball.SetActive(false);
         bestShotText.enabled = false;
         lastShotText.enabled = false;
+        newLocationButton.SetActive(false);
+        obstacleMenuButton.SetActive(false);
+        mainMenuButton.SetActive(false);
+        mainCam.transform.position = birdView;
+        mainCam.transform.eulerAngles = satellite;
+        previousTokenInstance = Instantiate(PreviousToken, new Vector3(ballStart.x, 0.08f, ballStart.z), Quaternion.identity);
     }
 
     public void CloseObstacleMenu()
@@ -213,11 +223,13 @@ public class PracticeController : MonoBehaviour
         newBasketball.SetActive(true);
         bestShotText.enabled = true;
         lastShotText.enabled = true;
-    }
-
-    private void StoreShotData()
-    {
-        usedObstacles = ScoreAccumulator.GetUsedObstacles();
+        newLocationButton.SetActive(true);
+        obstacleMenuButton.SetActive(true);
+        mainMenuButton.SetActive(true);
+        mainCam.transform.position = PracticeLocationSelector.cameraLocation;
+        mainCam.transform.eulerAngles = PracticeLocationSelector.cameraAngle;
+        mainCam.transform.LookAt(hoopLocation);
+        Destroy(previousTokenInstance);
     }
 
     #region "Button Handling" 
@@ -230,6 +242,8 @@ public class PracticeController : MonoBehaviour
         obstacleMenuButton.GetComponent<Button>().enabled = false;
         newLocationButton.GetComponent<Image>().color = Color.gray;
         newLocationButton.GetComponent<Button>().enabled = false;
+        mainMenuButton.GetComponent<Image>().color = Color.gray;
+        mainMenuButton.GetComponent<Button>().enabled = false;
     }
 
     public void EnableButtons()
@@ -239,6 +253,8 @@ public class PracticeController : MonoBehaviour
         obstacleMenuButton.GetComponent<Button>().enabled = true;
         newLocationButton.GetComponent<Image>().color = Color.white;
         newLocationButton.GetComponent<Button>().enabled = true;
+        mainMenuButton.GetComponent<Image>().color = Color.white;
+        mainMenuButton.GetComponent<Button>().enabled = true;
 
     }
 
@@ -279,7 +295,7 @@ public class PracticeController : MonoBehaviour
             bestShot = lastShot;
             bestShotText.text = "Best Shot: " + bestShot.ToString();
         }
-  
+
     }
 
     #region "Shot Selection"
@@ -292,6 +308,7 @@ public class PracticeController : MonoBehaviour
         obstacleMenuButton.SetActive(false);
         mainMenuButton.SetActive(false);
         newLocationButton.SetActive(false);
+        mainMenuButton.SetActive(false);
         lastShotText.enabled = false;
         bestShotText.enabled = false;
         slideCameraUp = true;
@@ -321,6 +338,7 @@ public class PracticeController : MonoBehaviour
     public void ReturnToMenu()
     {
         ResetBall();
+        ObstacleController.placedObstacles.Clear();
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
 
