@@ -96,7 +96,7 @@ public class GameControllerMenu : MonoBehaviour {
         List<NetworkData.CurrentGameInfo> userGames = NetworkController.RetrieveGames(4);
         List<NetworkData.CurrentGameInfo> opponentsTurnGames = new List<NetworkData.CurrentGameInfo>();
 
-        Debug.Log(NetworkController.RetrieveGames(user).Count);
+
 
         //add "Your Turn" title
         //GameObject yourTurn = Instantiate(yourTurnPrefab) as GameObject;

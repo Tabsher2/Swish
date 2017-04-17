@@ -64,7 +64,7 @@ namespace NetworkData
             // Read the content.  
             string responseFromServer = reader.ReadToEnd();
             responseMessage = JsonUtility.FromJson<GameIDs>(responseFromServer);
-            Debug.Log(responseFromServer);
+
             List<CurrentGameInfo> userGames = responseMessage.Games;
             return userGames;
             // Display the content.  

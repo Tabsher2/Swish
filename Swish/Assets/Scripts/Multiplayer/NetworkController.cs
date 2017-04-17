@@ -97,4 +97,15 @@ public class NetworkController : MonoBehaviour
         List<NetworkData.friendsIDs> friendsNames = getFriendsList.getFriends(user);
         return friendsNames;
     }
+    public static List<NetworkData.statLeaderName> getLeaderboard(string LeaderboardTitle)
+    {
+        List<NetworkData.statLeaderName> statLeaderList = getLeaderboards.RetrieveLeaders(LeaderboardTitle);
+        return statLeaderList;
+    }
+
+    public static List<NetworkData.statLeaderWins> getLeaderboardWins(string LeaderboardTitle)
+    {
+        List<NetworkData.statLeaderWins> statLeaderWinsList = getLeaderboards.RetrieveLeadersWins(LeaderboardTitle);
+        return statLeaderWinsList;
+    }
 }
