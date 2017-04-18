@@ -105,8 +105,8 @@ public class GameController : MonoBehaviour
     {
         mainCam = Camera.main;
         replayText.GetComponent<Text>().enabled = false;
-        gameID = GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID;
-
+        //gameID = GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID;
+        gameID = 5;
     }
     // Use this for initialization
     void Start()
@@ -233,11 +233,11 @@ public class GameController : MonoBehaviour
 
     private void ShotMade()
     {
-        if (remainingShots == 3)
-            NetworkController.UpdateShotStreak(user, 1);
         if (usedObstacles.Count > 0 && copyingShot)
         {
-            for (int i = 0; i < usedObstacles.Count; i++)
+            if (ScoreAccumulator.hitObstacles.Count == usedObstacles.Count)
+                return;
+            for (int i = 0; i < ScoreAccumulator.hitObstacles.Count; i++)
             {
                 if (usedObstacles[i].locationX == ScoreAccumulator.hitObstacles[i].locationX && usedObstacles[i].locationZ == ScoreAccumulator.hitObstacles[i].locationZ)
                     continue;
@@ -250,12 +250,13 @@ public class GameController : MonoBehaviour
                         remainingShots--;
                         MissedCopyShot();
                     }
-                    else
-                        CreateBall();
                     return;
                 }
             }
         }
+        if (remainingShots == 3)
+            NetworkController.UpdateShotStreak(user, 1);
+        
         remainingShots = -1;
         shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10, 90, 0));
         if (swish)
@@ -277,10 +278,7 @@ public class GameController : MonoBehaviour
         MadeShot = false;
         if (takingShot)
         {
-            List<ScoreAccumulator.Obstacle> finalObstacles = ScoreAccumulator.GetUsedObstacles();
-            List<ScoreAccumulator.Obstacle> placedObstacles = ObstacleController.GetPlacedObstacles();
-            if (placedObstacles.Count > 0)
-                NetworkController.SendObstacles(finalObstacles, placedObstacles, gameID);
+            StoreObstacleData();
             userScore += shotScore;
             NotifyOwnSuccess();
         }
@@ -329,6 +327,7 @@ public class GameController : MonoBehaviour
     {
         obstacleMenu.SetActive(true);
         newBasketball.SetActive(false);
+        obstacleMenuButton.SetActive(false);
         mainCam.transform.position = birdView;
         mainCam.transform.eulerAngles = satellite;
         previousTokenInstance = Instantiate(PreviousToken, new Vector3(ballStart.x, 0.08f, ballStart.z), Quaternion.identity);
@@ -338,17 +337,19 @@ public class GameController : MonoBehaviour
     {
         obstacleMenu.SetActive(false);
         newBasketball.SetActive(true);
+        obstacleMenuButton.SetActive(true);
         mainCam.transform.position = LocationSelector.cameraLocation;
         mainCam.transform.eulerAngles = LocationSelector.cameraAngle;
         mainCam.transform.LookAt(hoopLocation);
         Destroy(previousTokenInstance);
     }
 
-    private void StoreShotData()
+    private void StoreObstacleData()
     {
         finalObstacles = ScoreAccumulator.GetUsedObstacles();
         placedObstacles = ObstacleController.GetPlacedObstacles();
-        NetworkController.SendObstacles(finalObstacles, placedObstacles, gameID);
+        if (placedObstacles.Count > 0)
+            NetworkController.SendObstacles(finalObstacles, placedObstacles, gameID);
     }
 
     private void LoadShotData(int gameID)
@@ -512,6 +513,7 @@ public class GameController : MonoBehaviour
         if (receivedLetter)
         {
             receivedLetter = false;
+            DestroyObstacle.DeleteAllObstacles();
             StartCoroutine(WaitToSend());
         }
         notificationPanel.SetActive(false);
@@ -591,10 +593,10 @@ public class GameController : MonoBehaviour
         notificationMessage.text = "\t\t\tWay to go!\nNow, create your own shot!";
         //Update Copy result to a 1 since you 'won' their shot
         NetworkController.UpdateCopyResult(1, gameID);
-        if (placedObstacles.Count > 0)
+        if (mapObstacles.Count > 0)
         {
             NetworkController.ClearObstacles(gameID);
-            placedObstacles.Clear();
+            mapObstacles.Clear();
             usedObstacles.Clear();
             DestroyObstacle.DeleteAllObstacles();
         }
@@ -609,7 +611,6 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationMessage.text = "\t\t\tGood job!\n\t\tShot Score: " + shotScore.ToString();
         NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z, gameID);
-        StoreShotData();
         ResetBall();
         turnCompleteMade = true;
     }
@@ -1022,12 +1023,11 @@ public class GameController : MonoBehaviour
     {
         yield return new WaitForSeconds(2);
         NetworkController.AddLetter(player, userLetters.Length, 2, gameID);
-        if (placedObstacles.Count > 0)
+        if (mapObstacles.Count > 0)
         {
             NetworkController.ClearObstacles(gameID);
-            placedObstacles.Clear();
+            mapObstacles.Clear();
             usedObstacles.Clear();
-            DestroyObstacle.DeleteAllObstacles();
         }
     }
 
