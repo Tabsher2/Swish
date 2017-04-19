@@ -12,7 +12,6 @@ namespace GameInfoForLoad
 
         private void Awake()
         {
-            gameID = PlayerPrefs.GetInt("userID");
             DontDestroyOnLoad(this);
         }
 

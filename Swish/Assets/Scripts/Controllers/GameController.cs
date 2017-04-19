@@ -106,8 +106,8 @@ public class GameController : MonoBehaviour
     {
         mainCam = Camera.main;
         replayText.GetComponent<Text>().enabled = false;
-        //gameID = GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID;
-        gameID = 5;
+        gameID = GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID;
+        //gameID = 5;
     }
     // Use this for initialization
     void Start()

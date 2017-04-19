@@ -76,6 +76,9 @@
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
@@ -83,12 +86,14 @@
   <ItemGroup>
     <Compile Include="Assets\AppLogIn.cs" />
     <Compile Include="Assets\AppSignUp.cs" />
+    <Compile Include="Assets\ChallengeButton.cs" />
     <Compile Include="Assets\LogInSignUpController.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuCurrentStreak.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuEmail.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuGamesWon.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuSwishesMade.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuUsername.cs" />
+    <Compile Include="Assets\Scripts\Account\buttonLogout.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraMotor.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraSwipeManager.cs" />
     <Compile Include="Assets\Scripts\Camera\ControllingCameraAspectScript.cs" />
@@ -103,6 +108,7 @@
     <Compile Include="Assets\Scripts\Controllers\PracticeController.cs" />
     <Compile Include="Assets\Scripts\Controllers\ReplayController.cs" />
     <Compile Include="Assets\Scripts\DestroyText.cs" />
+    <Compile Include="Assets\Scripts\Friends\FriendChallengeButton.cs" />
     <Compile Include="Assets\Scripts\Friends\FriendsList.cs" />
     <Compile Include="Assets\Scripts\Friends\friendListPlayerID.cs" />
     <Compile Include="Assets\Scripts\Friends\getFriendsList.cs" />
@@ -126,6 +132,8 @@
     <Compile Include="Assets\Scripts\Multiplayer\NetworkController.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\SendShotData.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\UpdateLeaderboards.cs" />
+    <Compile Include="Assets\Scripts\NewGame\SetNewGame.cs" />
+    <Compile Include="Assets\Scripts\NewGame\playFriendButton.cs" />
     <Compile Include="Assets\Scripts\Obstacles\DestroyObstacle.cs" />
     <Compile Include="Assets\Scripts\Obstacles\TrampolineScript.cs" />
     <Compile Include="Assets\Scripts\PracticeLocationSelector.cs" />
@@ -141,7 +149,12 @@
     <Compile Include="Assets\Scripts\Throw Mechanics\CheckBallTimeout.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\SwipeBall.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\ThrowScript.cs" />
+    <Compile Include="Assets\SetActiveGameLengthPanel.cs" />
+    <Compile Include="Assets\gameLength.cs" />
+    <Compile Include="Assets\gameLengthButton.cs" />
+    <Compile Include="Assets\gameLengthPanelActivate.cs" />
     <Compile Include="Assets\goToSignUp.cs" />
+    <Compile Include="Assets\setUpGameInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

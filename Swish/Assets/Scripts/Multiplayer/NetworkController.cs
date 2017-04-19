@@ -120,4 +120,11 @@ public class NetworkController : MonoBehaviour
         string added = NetworkData.GetAppSignUp.AddUser(username, email, pw, dob);
         return added;
     }
+
+    public static int AddGame(int user, int opponent, int gameLength)
+    {
+        
+        int newGameID = NetworkData.SetNewGame.RetrieveGames(user, opponent, gameLength);
+        return newGameID;
+    }
 }

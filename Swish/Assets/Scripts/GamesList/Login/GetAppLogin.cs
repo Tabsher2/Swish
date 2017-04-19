@@ -61,8 +61,10 @@ namespace NetworkData
             }
             else
             {
+                Debug.Log(responseMessage.message);
                 id = "-111";
             }
+            Debug.Log(id);
             return Convert.ToInt32(id);
             // Display the content.  
         }
