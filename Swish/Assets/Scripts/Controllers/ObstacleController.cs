@@ -64,6 +64,7 @@ public class ObstacleController : MonoBehaviour
         {
             obstacleMenu.SetActive(false);
             bannerButton.SetActive(false);
+            bannerText.alignment = TextAnchor.MiddleCenter;
             bannerText.text = "Tap on the court to select a location.";
             bannerPanel.SetActive(true);
             placeWall = true;
@@ -77,6 +78,7 @@ public class ObstacleController : MonoBehaviour
         {
             obstacleMenu.SetActive(false);
             bannerButton.SetActive(false);
+            bannerText.alignment = TextAnchor.MiddleCenter;
             bannerText.text = "Tap on the court to select a location.";
             bannerPanel.SetActive(true);
             placeTramp = true;
@@ -148,13 +150,15 @@ public class ObstacleController : MonoBehaviour
                 obstacleDown = true;
                 bannerPanel.SetActive(true);
                 bannerButton.SetActive(true);
+                bannerText.alignment = TextAnchor.MiddleLeft;
                 bannerText.text = "Place obstacle here?";
             }
             else
             {
                 Array.Clear(overlaps, 0, overlaps.Length);
                 bannerButton.SetActive(false);
-                bannerText.text = "\tCannot place obstacle there.";
+                bannerText.alignment = TextAnchor.MiddleCenter;
+                bannerText.text = "Cannot place obstacle there.";
             }
             overlapFlag = false;
         }
@@ -219,6 +223,7 @@ public class ObstacleController : MonoBehaviour
                 obstacleDown = true;
                 bannerPanel.SetActive(true);
                 bannerButton.SetActive(true);
+                bannerText.alignment = TextAnchor.MiddleLeft;
                 bannerText.text = "Place obstacle here?";
 
             }
@@ -226,7 +231,8 @@ public class ObstacleController : MonoBehaviour
             {
                 Array.Clear(overlaps, 0, overlaps.Length);
                 bannerButton.SetActive(false);
-                bannerText.text = "\tCannot place obstacle there.";
+                bannerText.alignment = TextAnchor.MiddleCenter;
+                bannerText.text = "Cannot place obstacle there.";
             }
             overlapFlag = false;
 
@@ -306,11 +312,13 @@ public class ObstacleController : MonoBehaviour
     {
         if (currentMessage == 1)
         {
+            bannerText.alignment = TextAnchor.MiddleLeft;
             bannerText.text = "Double Tap to Delete.";
             currentMessage = 2;
         }
         else
         {
+            bannerText.alignment = TextAnchor.MiddleLeft;
             bannerText.text = "Press Okay when finished.";
             currentMessage = 1;
         }

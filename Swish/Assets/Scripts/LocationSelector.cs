@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class LocationSelector : MonoBehaviour {
+public class LocationSelector : MonoBehaviour
+{
 
     //Selection Token
     public GameObject selectionToken;
@@ -28,13 +29,16 @@ public class LocationSelector : MonoBehaviour {
 
     Vector3 clickPos;
 
-	// Use this for initialization
-	void Start () {
+    // Use this for initialization
+    void Start()
+    {
+        bannerText.alignment = TextAnchor.MiddleCenter;
         bannerText.text = "Tap on the court to select a location.";
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
         if (slideCameraDown)
             CameraController.MoveToSelectedSpot(Camera.main.transform.position, Camera.main.transform.eulerAngles, cameraLocation, cameraAngle);
 
@@ -51,7 +55,7 @@ public class LocationSelector : MonoBehaviour {
                 SwitchMessage();
             }
         }
-	}
+    }
 
     private void OnMouseDown()
     {
@@ -68,7 +72,7 @@ public class LocationSelector : MonoBehaviour {
             {
                 clickPos.x -= (Screen.width / 2);
                 clickPos.y -= (Screen.height / 2);
-                ourX = ((clickPos.y / (0.435f * Screen.height)) * 10)-0.044f;
+                ourX = ((clickPos.y / (0.435f * Screen.height)) * 10) - 0.044f;
                 ourZ = -(clickPos.x / (0.386f * Screen.width)) * 5;
             }
             //5x3
@@ -109,6 +113,7 @@ public class LocationSelector : MonoBehaviour {
             displayInitialBanner = false;
             bannerPanel.SetActive(true);
             bannerButton.SetActive(true);
+            bannerText.alignment = TextAnchor.MiddleLeft;
             bannerText.text = "Shoot from here?";
         }
     }
@@ -123,7 +128,7 @@ public class LocationSelector : MonoBehaviour {
         Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
         float distance = CalculateDistance(hoopLocation, selectedLocation);
 
-        float yAngle = Mathf.Atan(1.5f/(distance + 1));
+        float yAngle = Mathf.Atan(1.5f / (distance + 1));
         float angle = Mathf.Acos((hoopLocation.x - selectedLocation.x) / distance);
         float cameraX = Mathf.Cos(angle) * (distance + 1);
         float cameraZ = Mathf.Sin(angle) * (distance + 1);
@@ -150,11 +155,13 @@ public class LocationSelector : MonoBehaviour {
     {
         if (currentMessage == 1)
         {
-            bannerText.text = "   You are aiming for the top hoop.";
+            bannerText.alignment = TextAnchor.MiddleCenter;
+            bannerText.text = "You are aiming for the top hoop.";
             currentMessage = 2;
         }
         else
         {
+            bannerText.alignment = TextAnchor.MiddleCenter;
             bannerText.text = "Tap on the court to select a location.";
             currentMessage = 1;
         }

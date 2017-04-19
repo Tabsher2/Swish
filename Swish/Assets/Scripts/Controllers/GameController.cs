@@ -50,6 +50,7 @@ public class GameController : MonoBehaviour
 
     //Notification Variables
     public GameObject notificationPanel;
+    public Text notificationTitle;
     public Text notificationMessage;
 
     //Notification Listeners
@@ -105,8 +106,8 @@ public class GameController : MonoBehaviour
     {
         mainCam = Camera.main;
         replayText.GetComponent<Text>().enabled = false;
-        gameID = GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID;
-
+        //gameID = GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID;
+        gameID = 5;
     }
     // Use this for initialization
     void Start()
@@ -256,7 +257,7 @@ public class GameController : MonoBehaviour
         }
         if (remainingShots == 3)
             NetworkController.UpdateShotStreak(user, 1);
-        
+
         remainingShots = -1;
         shotText = Instantiate(shotTextSwish, textStartPos, Quaternion.Euler(-10, 90, 0));
         if (swish)
@@ -294,7 +295,7 @@ public class GameController : MonoBehaviour
 
     private void UpdateRSText()
     {
-        remainingShotsText.text = "Shots Left:\n\t\t" + remainingShots.ToString() + "/3";
+        remainingShotsText.text = "SHOTS LEFT: " + remainingShots.ToString() + "/3";
     }
 
     private bool KillBall()
@@ -562,7 +563,8 @@ public class GameController : MonoBehaviour
     private void NotifyLetterReceived(string word)
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\t    Too bad!\n\t\t  You received: '" + word.Substring(word.Length - 1) + "'\nNow, create your own shot!";
+        notificationTitle.text = "OH NO!!";
+        notificationMessage.text = "You Missed!\nYou received the letter: '" + word.Substring(word.Length - 1) + "'\nNow create your own shot!";
         copyingShot = false;
         takingShot = true;
         ResetBall();
@@ -573,7 +575,8 @@ public class GameController : MonoBehaviour
     private void NotifyCopyShot()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\t  " + opponentName + "\nmade their shot!";
+        notificationTitle.text = "UH-OH!";
+        notificationMessage.text = opponentName + "\nmade their shot! Copy it\nto avoid getting a letter!";
         startReplay = true;
         newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
     }
@@ -581,7 +584,8 @@ public class GameController : MonoBehaviour
     private void NotifyMissedShot()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\t  " + opponentName + "\nmissed their shot!\n\t\t   Create your own!";
+        notificationTitle.text = "NOW'S YOUR CHANCE!";
+        notificationMessage.text = opponentName + "\nmissed their shot!\nNow create your own shot!";
         //Update Copy Result to a 0 for a don't care value, since you won't be copying a shot
         NetworkController.UpdateCopyResult(0, gameID);
         transitionToShotSelection = true;
@@ -590,7 +594,8 @@ public class GameController : MonoBehaviour
     private void NotifyCopySuccess()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\tWay to go!\nNow, create your own shot!";
+        notificationTitle.text = "YOU DID IT!";
+        notificationMessage.text = "You copied their shot!\nYou avoided gaining another letter!\nNow create your own shot!";
         //Update Copy result to a 1 since you 'won' their shot
         NetworkController.UpdateCopyResult(1, gameID);
         if (mapObstacles.Count > 0)
@@ -609,7 +614,8 @@ public class GameController : MonoBehaviour
     private void NotifyOwnSuccess()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\tGood job!\n\t\tShot Score: " + shotScore.ToString();
+        notificationTitle.text = "NICE SHOT!";
+        notificationMessage.text = "You made it!\nShot Score: " + shotScore.ToString();
         NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z, gameID);
         ResetBall();
         turnCompleteMade = true;
@@ -619,21 +625,24 @@ public class GameController : MonoBehaviour
     {
         notificationPanel.SetActive(true);
         ResetBall();
-        notificationMessage.text = "\t\t\t   Too bad!";
+        notificationTitle.text = "TOO BAD!";
+        notificationMessage.text = "You missed your shot!\nBetter luck next time!";
         turnCompleteMissed = true;
     }
 
     private void NotifyEnemySuccess()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\t  " + opponentName + "\n\t\tmade your shot!\n\t\tTry a harder one!";
+        notificationTitle.text = "TOUGH LUCK!";
+        notificationMessage.text = opponentName + "\nmade your shot!\nTry a harder one next time!";
         understand = true;
     }
 
     private void NotifyEnemyFailure()
     {
         notificationPanel.SetActive(true);
-        notificationMessage.text = "\t\t\t  " + opponentName + "\n\t\tmissed your shot!\n\t\t\t  Good job!";
+        notificationTitle.text = "GOOD JOB!";
+        notificationMessage.text = opponentName + "\nmissed your shot!\nThey received a letter!";
         if (opponentLetters.Length == gameLength)
             gameWin = true;
         else
@@ -646,11 +655,15 @@ public class GameController : MonoBehaviour
         int currency = (userScore / 500) + 1;
         if (maxRounds)
         {
-            notificationMessage.text = "\tMax Turn Reached!\n\t\t\t  You Lost!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t You earned " + currency + " coins!";
+            notificationTitle.text = "YOU LOST!";
+            notificationMessage.text = "Max Turn Limit Reached!\nYour Score: " + userScore + "\nOpponent Score: " + opponentScore + "\n\n You earned " + currency + " coins!";
             maxRounds = false;
         }
         else
-            notificationMessage.text = "\t\t\t  You Lost!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t You earned " + currency + " coins!";
+        {
+            notificationTitle.text = "YOU LOST!";
+            notificationMessage.text = "Your Score: " + userScore + "\nOpponent Score: " + opponentScore + "\n\n You earned " + currency + " coins!";
+        }
         gameLoss = true;
     }
 
@@ -660,11 +673,15 @@ public class GameController : MonoBehaviour
         int currency = (userScore / 500) + 5;
         if (maxRounds)
         {
-            notificationMessage.text = "\tMax Turn Reached!\n\t\t\t  You Won!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t  You earned " + currency + " coins!";
+            notificationTitle.text = "YOU WON!";
+            notificationMessage.text = "Max Turn Limit Reached!\nYour Score: " + userScore + "\nOpponent Score: " + opponentScore + "\n\n You earned " + currency + " coins!";
             maxRounds = false;
         }
         else
-            notificationMessage.text = "\t\t\t  You Won!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t  You earned " + currency + " coins!";
+        {
+            notificationTitle.text = "YOU WON!";
+            notificationMessage.text = "\nYour Score: " + userScore + "\nOpponent Score: " + opponentScore + "\n\n You earned " + currency + " coins!";
+        }
         sendVictory = true;
     }
 
@@ -672,7 +689,8 @@ public class GameController : MonoBehaviour
     {
         notificationPanel.SetActive(true);
         int currency = (userScore / 500) + 5;
-        notificationMessage.text = "\tMax Turn Reached!\n\t\t\t  It's a Tie!\n\t\tYour Score: " + userScore + "\n\tOpponent Score: " + opponentScore + "\n\n\t  You earned " + currency + " coins!";
+        notificationTitle.text = "YOU TIED!";
+        notificationMessage.text = "Max Turn Limit Reached!\nYour Score: " + userScore + "\nOpponent Score: " + opponentScore + "\n\n You earned " + currency + " coins!";
         gameTie = true;
     }
 
@@ -820,12 +838,12 @@ public class GameController : MonoBehaviour
 
     public void UpdateLetterText()
     {
-        userLettersText.text = "You: \t\t\t " + userLetters;
+        userLettersText.text = "YOU: " + userLetters;
         for (int i = userLetters.Length; i < gameLength; i++)
-            userLettersText.text += " _";
-        opponentLettersText.text = "Opponent:\t " + opponentLetters;
+            userLettersText.text += "_ ";
+        opponentLettersText.text = "OPPONENT: " + opponentLetters;
         for (int i = opponentLetters.Length; i < gameLength; i++)
-            opponentLettersText.text += " _";
+            opponentLettersText.text += "_ ";
     }
 
     public void Give5Letter()
@@ -902,9 +920,9 @@ public class GameController : MonoBehaviour
     {
         //Prevent them from interfering with the ball
         disableThrow = true;
-        replayShotButton.GetComponent<Image>().color = Color.gray;
+        //replayShotButton.GetComponent<Image>().color = Color.gray;
         replayShotButton.GetComponent<Button>().enabled = false;
-        obstacleMenuButton.GetComponent<Image>().color = Color.gray;
+        //obstacleMenuButton.GetComponent<Image>().color = Color.gray;
         obstacleMenuButton.GetComponent<Button>().enabled = false;
     }
 
@@ -912,14 +930,14 @@ public class GameController : MonoBehaviour
     {
         if (copyingShot)
         {
-            replayShotButton.GetComponent<Image>().color = Color.white;
+            //replayShotButton.GetComponent<Image>().color = Color.white;
             replayShotButton.GetComponent<Button>().enabled = true;
-            obstacleMenuButton.GetComponent<Image>().color = Color.gray;
+            //obstacleMenuButton.GetComponent<Image>().color = Color.gray;
             obstacleMenuButton.GetComponent<Button>().enabled = false;
         }
         else
         {
-            obstacleMenuButton.GetComponent<Image>().color = Color.white;
+            //obstacleMenuButton.GetComponent<Image>().color = Color.white;
             obstacleMenuButton.GetComponent<Button>().enabled = true;
         }
 
@@ -931,14 +949,14 @@ public class GameController : MonoBehaviour
 
         if (copyingShot)
         {
-            replayShotButton.GetComponent<Image>().color = Color.white;
+            //replayShotButton.GetComponent<Image>().color = Color.white;
             replayShotButton.GetComponent<Button>().enabled = true;
-            obstacleMenuButton.GetComponent<Image>().color = Color.gray;
+            //obstacleMenuButton.GetComponent<Image>().color = Color.gray;
             obstacleMenuButton.GetComponent<Button>().enabled = false;
         }
         else
         {
-            replayShotButton.GetComponent<Image>().color = Color.gray;
+            //replayShotButton.GetComponent<Image>().color = Color.gray;
             replayShotButton.GetComponent<Button>().enabled = false;
         }
 
