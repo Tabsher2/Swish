@@ -62,15 +62,23 @@ public class ScoreAccumulator : MonoBehaviour
     public static void CalculateScore()
     {
         shotScore = 100;
+        bool removeRim = false;
+        List<int> rimIndices = new List<int>();
+        bool removeBackboard = false;
+        List<int> bbIndices = new List<int>();
         for (int i = 0; i < hitObstacles.Count; i++)
         {
             switch (hitObstacles[i].obstacleID)
             {
                 case 0:
                     swish = false;
+                    removeRim = true;
+                    rimIndices.Add(i);
                     break;
                 case -1:
                     swish = false;
+                    removeBackboard = true;
+                    bbIndices.Add(i);
                     break;
                 case 1:
                     shotScore += 150;
@@ -80,13 +88,22 @@ public class ScoreAccumulator : MonoBehaviour
                     break;
             }
         }
+        if (removeRim)
+        {
+            for (int i = 0; i < rimIndices.Count; i++)
+                hitObstacles.RemoveAt(rimIndices[i]);
+        }
+        if (removeBackboard)
+        {
+            for (int i = 0; i < bbIndices.Count; i++)
+                hitObstacles.RemoveAt(bbIndices[i]);
+        }
         if (GameController.ballStart.x < -6)
             shotScore += 100;
         if (GameController.ballStart.x < 0)
             shotScore += 100;
         if (swish)
             shotScore *= 2;
-
         GameController.SetMadeShot(shotScore, swish);
 
     }
