@@ -10,10 +10,11 @@ using GameInfoForLoad;
 public class playButtonGameList : MonoBehaviour {
     public GameObject thisObject;
     public Button playButtonListItem;
-    public int user = 4;
+    public int user;
     public int turnOwner;
     void Start()
     {
+        user = PlayerPrefs.GetInt("userID");
         turnOwner = thisObject.GetComponent<currentGameContentInfo>().turn;
         Button btn = playButtonListItem.GetComponent<Button>();
         btn.onClick.AddListener(TaskOnClick);

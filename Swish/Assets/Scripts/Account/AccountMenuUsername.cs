@@ -7,10 +7,11 @@ using UnityEngine.UI;
 public class AccountMenuUsername : MonoBehaviour {
 
     public Text username;
-    private int user = 4;
+    private int user;
 
     // Use this for initialization
     void Start () {
+        user = PlayerPrefs.GetInt("userID");
         NetworkData.AccountInfo userAccountInfo = NetworkController.FetchAccountInfo(user);
         username.text = userAccountInfo.userName;
 

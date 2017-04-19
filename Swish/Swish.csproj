@@ -76,11 +76,17 @@
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AppLogIn.cs" />
+    <Compile Include="Assets\AppSignUp.cs" />
+    <Compile Include="Assets\LogInSignUpController.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuCurrentStreak.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuEmail.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuGamesWon.cs" />
@@ -106,6 +112,8 @@
     <Compile Include="Assets\Scripts\GamesList\CurrentGameCaller.cs" />
     <Compile Include="Assets\Scripts\GamesList\GameInfo.cs" />
     <Compile Include="Assets\Scripts\GamesList\GetCurrentGames.cs" />
+    <Compile Include="Assets\Scripts\GamesList\Login\GetAppLogin.cs" />
+    <Compile Include="Assets\Scripts\GamesList\Login\GetAppSignUp.cs" />
     <Compile Include="Assets\Scripts\GamesList\currentGameContentInfo.cs" />
     <Compile Include="Assets\Scripts\GamesList\playButtonGameList.cs" />
     <Compile Include="Assets\Scripts\GetURL.cs" />
@@ -136,6 +144,7 @@
     <Compile Include="Assets\Scripts\Throw Mechanics\CheckBallTimeout.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\SwipeBall.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\ThrowScript.cs" />
+    <Compile Include="Assets\goToSignUp.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

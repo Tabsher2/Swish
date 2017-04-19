@@ -108,4 +108,16 @@ public class NetworkController : MonoBehaviour
         List<NetworkData.statLeaderWins> statLeaderWinsList = getLeaderboards.RetrieveLeadersWins(LeaderboardTitle);
         return statLeaderWinsList;
     }
+
+    public static int Login(string email, string pw)
+    {
+        int userID = NetworkData.GetAppLogin.Login(email, pw);
+        return userID;
+    }
+
+    public static string AddUser(string username, string email, string pw, string dob)
+    {
+        string added = NetworkData.GetAppSignUp.AddUser(username, email, pw, dob);
+        return added;
+    }
 }

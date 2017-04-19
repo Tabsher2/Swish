@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class AccountMenuGamesWon : MonoBehaviour {
 
     public Text gamesWon;
-    private int user = 4;
+    private int user;
 
     // Use this for initialization
     void Start()
     {
+        user = PlayerPrefs.GetInt("userID");
         NetworkData.AccountInfo userAccountInfo = NetworkController.FetchAccountInfo(user);
         gamesWon.text = userAccountInfo.gamesWon.ToString();
     }

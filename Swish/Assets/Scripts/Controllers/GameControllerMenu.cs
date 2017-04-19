@@ -29,7 +29,7 @@ public class GameControllerMenu : MonoBehaviour {
     public Toggle button4;
     public Toggle button5;
 
-    public int user = 4;
+    public int user;
 
     // Use this for initialization
     void Awake ()
@@ -42,14 +42,15 @@ public class GameControllerMenu : MonoBehaviour {
         menu5Menu.SetActive(false);
 
         practice.onClick.AddListener(() => PracticeClicked());
+        user = PlayerPrefs.GetInt("userID");
     }
 
     void Start()
     {
         buttonHome.Select();
-
+        Debug.Log("Current games for user: " + user);
         getCurrentGames(user);
-
+        Debug.Log(PlayerPrefs.GetInt("userID"));
     }
 
     // Update is called once per frame
@@ -93,7 +94,7 @@ public class GameControllerMenu : MonoBehaviour {
     void getCurrentGames(int user)
     {
         //get users games
-        List<NetworkData.CurrentGameInfo> userGames = NetworkController.RetrieveGames(4);
+        List<NetworkData.CurrentGameInfo> userGames = NetworkController.RetrieveGames(user);
         List<NetworkData.CurrentGameInfo> opponentsTurnGames = new List<NetworkData.CurrentGameInfo>();
 
 

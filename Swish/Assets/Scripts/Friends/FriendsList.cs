@@ -6,7 +6,7 @@ using friendsListInfo;
 
 public class FriendsList : MonoBehaviour {
 
-    private int user = 4;
+    private int user;
     public GameObject gamePrefab;
     public GameObject gamePrefabHeader;
     public GameObject scrollViewContentFriends;
@@ -14,6 +14,7 @@ public class FriendsList : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
+        user = PlayerPrefs.GetInt("userID");
         List<NetworkData.friendsIDs> userFriendsInfo = NetworkController.getFriends(user);
         List<string> userFriendNames = new List<string>();
 

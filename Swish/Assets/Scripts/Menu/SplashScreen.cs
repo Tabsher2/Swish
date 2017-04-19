@@ -12,7 +12,14 @@ public class SplashScreen : MonoBehaviour {
 
     IEnumerator Example()
     {;
-        yield return new WaitForSecondsRealtime(5);
-        SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        yield return new WaitForSecondsRealtime(2);
+        if (PlayerPrefs.GetInt("user") <= 0)
+        {
+            SceneManager.LoadScene("Login", LoadSceneMode.Single);
+        }
+        else
+        {
+            SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+        }
     }
 }

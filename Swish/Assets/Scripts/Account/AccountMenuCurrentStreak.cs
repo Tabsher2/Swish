@@ -6,11 +6,12 @@ using UnityEngine.UI;
 public class AccountMenuCurrentStreak : MonoBehaviour {
 
     public Text winStreak;
-    private int user = 4;
+    private int user;
 
     // Use this for initialization
     void Start()
     {
+        user = PlayerPrefs.GetInt("userID");
         NetworkData.AccountInfo userAccountInfo = NetworkController.FetchAccountInfo(user);
         winStreak.text = userAccountInfo.winStreak.ToString();
     }
