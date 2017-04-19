@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class AppLogIn : MonoBehaviour {
 
     public Text email;
-    public Text password;
+    public GameObject password;
     public Button logIn;
     public bool loggedIn;
     private int userID;
@@ -19,7 +19,7 @@ public class AppLogIn : MonoBehaviour {
 
     void loginClicked()
     {
-        userID = NetworkController.Login(email.text, password.text);
+        userID = NetworkController.Login(email.text, password.GetComponent<InputField>().text);
 
         if(userID == -111)
         {
