@@ -127,4 +127,15 @@ public class NetworkController : MonoBehaviour
         int newGameID = NetworkData.SetNewGame.RetrieveGames(user, opponent, gameLength);
         return newGameID;
     }
+
+    public static void AddFriend(int userID, int friendID)
+    {
+        NetworkData.AddUserFriends.AddFriends(userID, friendID);
+    }
+
+    public static int GetUserID(string username)
+    { 
+        int userID = NetworkData.GetUserID.RetrieveUserID(username);
+        return userID;
+    }
 }

@@ -84,10 +84,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\AddOnAddFreindPanel.cs" />
     <Compile Include="Assets\AppLogIn.cs" />
-    <Compile Include="Assets\AppSignUp.cs" />
-    <Compile Include="Assets\ChallengeButton.cs" />
-    <Compile Include="Assets\LogInSignUpController.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuCurrentStreak.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuEmail.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuGamesWon.cs" />
@@ -109,20 +107,26 @@
     <Compile Include="Assets\Scripts\Controllers\PracticeController.cs" />
     <Compile Include="Assets\Scripts\Controllers\ReplayController.cs" />
     <Compile Include="Assets\Scripts\DestroyText.cs" />
+    <Compile Include="Assets\Scripts\Friends\AddUserFriends.cs" />
     <Compile Include="Assets\Scripts\Friends\FriendChallengeButton.cs" />
     <Compile Include="Assets\Scripts\Friends\FriendsList.cs" />
+    <Compile Include="Assets\Scripts\Friends\addFriendButton.cs" />
     <Compile Include="Assets\Scripts\Friends\friendListPlayerID.cs" />
     <Compile Include="Assets\Scripts\Friends\getFriendsList.cs" />
     <Compile Include="Assets\Scripts\GamesList\CurrentGameCaller.cs" />
     <Compile Include="Assets\Scripts\GamesList\GameInfo.cs" />
     <Compile Include="Assets\Scripts\GamesList\GetCurrentGames.cs" />
+    <Compile Include="Assets\Scripts\GamesList\Login\AppSignUp.cs" />
     <Compile Include="Assets\Scripts\GamesList\Login\GetAppLogin.cs" />
     <Compile Include="Assets\Scripts\GamesList\Login\GetAppSignUp.cs" />
+    <Compile Include="Assets\Scripts\GamesList\Login\LogInSignUpController.cs" />
+    <Compile Include="Assets\Scripts\GamesList\Login\goToLoginOnCancel.cs" />
     <Compile Include="Assets\Scripts\GamesList\currentGameContentInfo.cs" />
     <Compile Include="Assets\Scripts\GamesList\playButtonGameList.cs" />
     <Compile Include="Assets\Scripts\GetURL.cs" />
     <Compile Include="Assets\Scripts\Leaderboards\leaderBoardDisplay.cs" />
     <Compile Include="Assets\Scripts\LocationSelector.cs" />
+    <Compile Include="Assets\Scripts\Menu\GetUserID.cs" />
     <Compile Include="Assets\Scripts\Menu\SplashScreen.cs" />
     <Compile Include="Assets\Scripts\Menu\getLeaderboards.cs" />
     <Compile Include="Assets\Scripts\Menu\menuLeaderBoardDisplay.cs" />
@@ -134,7 +138,9 @@
     <Compile Include="Assets\Scripts\Multiplayer\NetworkController.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\SendShotData.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\UpdateLeaderboards.cs" />
+    <Compile Include="Assets\Scripts\NewGame\ChallengeButton.cs" />
     <Compile Include="Assets\Scripts\NewGame\SetNewGame.cs" />
+    <Compile Include="Assets\Scripts\NewGame\okTenGames.cs" />
     <Compile Include="Assets\Scripts\NewGame\playFriendButton.cs" />
     <Compile Include="Assets\Scripts\Obstacles\DestroyObstacle.cs" />
     <Compile Include="Assets\Scripts\Obstacles\TrampolineScript.cs" />
@@ -156,9 +162,7 @@
     <Compile Include="Assets\gameLength.cs" />
     <Compile Include="Assets\gameLengthButton.cs" />
     <Compile Include="Assets\gameLengthPanelActivate.cs" />
-    <Compile Include="Assets\goToLoginOnCancel.cs" />
     <Compile Include="Assets\goToSignUp.cs" />
-    <Compile Include="Assets\okTenGames.cs" />
     <Compile Include="Assets\setUpGameInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
