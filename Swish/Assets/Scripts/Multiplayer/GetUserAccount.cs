@@ -32,6 +32,7 @@ namespace NetworkData
         public string bestSingleShot;
         public string bestShotStreak;
         public string currentShotStreak;
+        public string userCurrency; 
     }
 
     public class FetchAccountInfo : MonoBehaviour

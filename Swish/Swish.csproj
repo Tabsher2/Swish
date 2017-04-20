@@ -145,6 +145,7 @@
     <Compile Include="Assets\Scripts\Scoring\Practice Scoring\PracticeTNT.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreAccumulator.cs" />
     <Compile Include="Assets\Scripts\Scoring\TopNetTrigger.cs" />
+    <Compile Include="Assets\Scripts\Shop\GetUSerCurrency.cs" />
     <Compile Include="Assets\Scripts\Shop\shopScrollView.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\BallCollision.cs" />
     <Compile Include="Assets\Scripts\Throw Mechanics\BallThrow.cs" />
