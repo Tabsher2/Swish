@@ -157,6 +157,7 @@
     <Compile Include="Assets\gameLengthPanelActivate.cs" />
     <Compile Include="Assets\goToLoginOnCancel.cs" />
     <Compile Include="Assets\goToSignUp.cs" />
+    <Compile Include="Assets\okTenGames.cs" />
     <Compile Include="Assets\setUpGameInfo.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

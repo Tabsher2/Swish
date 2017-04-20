@@ -20,7 +20,8 @@ public class FriendChallengeButton : MonoBehaviour {
 	
 	// Update is called once per frame
 	void TaskOnClick () {
-		setUpInfo.GetComponent<setUpGameInformantion.setUpGameInfo>().opponentID = thisObject.GetComponent<friendsListInfo.friendListPlayerID>().friendIDname;
+        challengeButton.onClick.AddListener(TaskOnClick);
+        setUpInfo.GetComponent<setUpGameInformantion.setUpGameInfo>().opponentID = thisObject.GetComponent<friendsListInfo.friendListPlayerID>().friendIDname;
         
     }
 }

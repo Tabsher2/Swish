@@ -117,6 +117,8 @@ namespace GCmenu
             List<NetworkData.CurrentGameInfo> userGames = NetworkController.RetrieveGames(user);
             List<NetworkData.CurrentGameInfo> opponentsTurnGames = new List<NetworkData.CurrentGameInfo>();
 
+            PlayerPrefs.SetInt("gameCount", userGames.Count);
+
             var children = new List<GameObject>();
             foreach (Transform child in scrollViewContent.transform)
             {
