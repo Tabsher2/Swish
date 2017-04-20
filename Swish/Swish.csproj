@@ -76,6 +76,9 @@
     <Reference Include="UnityEditor.iOS.Extensions.Xcode">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.iOS.Extensions.Xcode">
+      <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Xcode.dll</HintPath>
+    </Reference>
     <Reference Include="UnityEditor.iOS.Extensions.Common">
       <HintPath>Library\UnityAssemblies\UnityEditor.iOS.Extensions.Common.dll</HintPath>
     </Reference>
@@ -91,6 +94,7 @@
     <Compile Include="Assets\Scripts\Account\AccountMenuSwishesMade.cs" />
     <Compile Include="Assets\Scripts\Account\AccountMenuUsername.cs" />
     <Compile Include="Assets\Scripts\Account\buttonLogout.cs" />
+    <Compile Include="Assets\Scripts\Account\userAccountInfo.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraMotor.cs" />
     <Compile Include="Assets\Scripts\Camera\CameraSwipeManager.cs" />
     <Compile Include="Assets\Scripts\Camera\ControllingCameraAspectScript.cs" />
@@ -122,6 +126,7 @@
     <Compile Include="Assets\Scripts\Menu\SplashScreen.cs" />
     <Compile Include="Assets\Scripts\Menu\getLeaderboards.cs" />
     <Compile Include="Assets\Scripts\Menu\menuLeaderBoardDisplay.cs" />
+    <Compile Include="Assets\Scripts\Menu\refresh.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\FetchUserData.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\GetShotData.cs" />
     <Compile Include="Assets\Scripts\Multiplayer\GetUserAccount.cs" />

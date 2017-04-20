@@ -5,7 +5,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using UnityEngine;
-
+//old
 namespace NetworkData
 {
 
@@ -24,6 +24,14 @@ namespace NetworkData
         public int swishesMade;
         public int winStreak;
         public string error;
+
+        public string totalScore;
+        public string bestWinStreak;
+        public string winRatio;
+        public string avgScorePerGame;
+        public string bestSingleShot;
+        public string bestShotStreak;
+        public string currentShotStreak;
     }
 
     public class FetchAccountInfo : MonoBehaviour
