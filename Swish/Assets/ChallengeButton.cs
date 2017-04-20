@@ -25,6 +25,7 @@ public class ChallengeButton : MonoBehaviour {
 
     void TaskOnClick()
     {
+        setUpInfo.GetComponent<setUpGameInformantion.setUpGameInfo>().opponentID = NetworkController.FindOpponent(PlayerPrefs.GetInt("userID"));
         setLengthPanel.SetActive(true);
         flag = true;
     }
