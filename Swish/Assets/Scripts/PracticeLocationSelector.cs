@@ -32,6 +32,7 @@ public class PracticeLocationSelector : MonoBehaviour
     // Use this for initialization
     void Start()
     {
+        bannerText.alignment = TextAnchor.MiddleCenter;
         bannerText.text = "Tap on the court to select a location.";
     }
 
@@ -112,6 +113,7 @@ public class PracticeLocationSelector : MonoBehaviour
             displayInitialBanner = false;
             bannerPanel.SetActive(true);
             bannerButton.SetActive(true);
+            bannerText.alignment = TextAnchor.MiddleLeft; ;
             bannerText.text = "Shoot from here?";
         }
     }
@@ -154,11 +156,13 @@ public class PracticeLocationSelector : MonoBehaviour
     {
         if (currentMessage == 1)
         {
+            bannerText.alignment = TextAnchor.MiddleCenter;
             bannerText.text = "   You are aiming for the top hoop.";
             currentMessage = 2;
         }
         else
         {
+            bannerText.alignment = TextAnchor.MiddleCenter;
             bannerText.text = "Tap on the court to select a location.";
             currentMessage = 1;
         }

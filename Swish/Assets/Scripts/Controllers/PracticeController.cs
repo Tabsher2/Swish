@@ -238,22 +238,22 @@ public class PracticeController : MonoBehaviour
     {
         //Prevent them from interfering with the ball
         disableThrow = true;
-        obstacleMenuButton.GetComponent<Image>().color = Color.gray;
+        //obstacleMenuButton.GetComponent<Image>().color = Color.gray;
         obstacleMenuButton.GetComponent<Button>().enabled = false;
-        newLocationButton.GetComponent<Image>().color = Color.gray;
+        //newLocationButton.GetComponent<Image>().color = Color.gray;
         newLocationButton.GetComponent<Button>().enabled = false;
-        mainMenuButton.GetComponent<Image>().color = Color.gray;
+        //mainMenuButton.GetComponent<Image>().color = Color.gray;
         mainMenuButton.GetComponent<Button>().enabled = false;
     }
 
     public void EnableButtons()
     {
         disableThrow = false;
-        obstacleMenuButton.GetComponent<Image>().color = Color.white;
+        //obstacleMenuButton.GetComponent<Image>().color = Color.white;
         obstacleMenuButton.GetComponent<Button>().enabled = true;
-        newLocationButton.GetComponent<Image>().color = Color.white;
+        //newLocationButton.GetComponent<Image>().color = Color.white;
         newLocationButton.GetComponent<Button>().enabled = true;
-        mainMenuButton.GetComponent<Image>().color = Color.white;
+        //mainMenuButton.GetComponent<Image>().color = Color.white;
         mainMenuButton.GetComponent<Button>().enabled = true;
 
     }
@@ -289,11 +289,11 @@ public class PracticeController : MonoBehaviour
     private void UpdateScoreText()
     {
         lastShot = shotScore;
-        lastShotText.text = "Last Shot: " + lastShot.ToString();
+        lastShotText.text = "LAST SHOT: " + lastShot.ToString();
         if (lastShot > bestShot)
         {
             bestShot = lastShot;
-            bestShotText.text = "Best Shot: " + bestShot.ToString();
+            bestShotText.text = "BEST SHOT: " + bestShot.ToString();
         }
 
     }
