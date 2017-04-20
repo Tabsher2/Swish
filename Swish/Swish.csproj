@@ -155,6 +155,7 @@
     <Compile Include="Assets\gameLength.cs" />
     <Compile Include="Assets\gameLengthButton.cs" />
     <Compile Include="Assets\gameLengthPanelActivate.cs" />
+    <Compile Include="Assets\goToLoginOnCancel.cs" />
     <Compile Include="Assets\goToSignUp.cs" />
     <Compile Include="Assets\setUpGameInfo.cs" />
   </ItemGroup>

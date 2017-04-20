@@ -4,13 +4,12 @@ using UnityEngine;
 
 public class LogInSignUpController : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    public GameObject signUpPanel;
+    public GameObject loginPanel;
+
+    void Start () {
+        loginPanel.SetActive(true);
+        signUpPanel.SetActive(false);
+    }
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
 }
