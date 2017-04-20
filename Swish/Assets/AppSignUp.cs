@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text.RegularExpressions;
 using UnityEngine;
@@ -26,20 +27,54 @@ public class AppSignUp : MonoBehaviour {
 
     void loginClicked()
     {
-        if(username.text.Length <= 5)
+
+        if (!Regex.IsMatch(username.text, @"^[a - z0 - 9]{3,18}$", RegexOptions.IgnoreCase))
         {
-            errorText.text = "Username must be at least six characters";
+            errorText.text = "Usernames must be alphanumeric, contain no spaces, and be between 3 and 18 characters long.";
             return;
         }
         else if(!IsEmail(email.text))
         {
-            errorText.text = "Email is not valid";
+            errorText.text = "Email must be in the format: email@example.com.";
             return;
         }
-        else if (pw.text.Length < 6)
+        else if (!Regex.IsMatch(pw.text, @"^(?=.*[0-9])(?=.*[a-z])[a-z0-9!@#$%^&*?]{6,18}$", RegexOptions.IgnoreCase))
         {
-            errorText.text = "Password must be at least 6 characters";
+            errorText.text = "Passwords can contain a-z, A-Z, 0-9, and !@#$%^&*? Passwords must contain at least one letter and one number. Passwords must be between 6 and 18 characters long.";
             return;
+        }
+        else if (!Regex.IsMatch(dob.text, @"^\d{4}-\d{2}-\d{2}$", RegexOptions.IgnoreCase))
+        {
+            errorText.text = "Date of birth invalid";
+            return;
+        }
+        else if (Regex.IsMatch(dob.text, @"^\d{4}-\d{2}-\d{2}$", RegexOptions.IgnoreCase))
+        {
+            DateTime birthdate;
+            try
+            {
+                birthdate = new DateTime(Int32.Parse(dob.text.Substring(0, 4)), Int32.Parse(dob.text.Substring(5, 2)), Int32.Parse(dob.text.Substring(7, 2)));
+            }
+            catch
+            {
+                errorText.text = "Date of birth invalid";
+                return;
+            }
+            
+            // Save today's date.
+            DateTime today = DateTime.UtcNow;
+            // Calculate the age.
+            int age = today.Year - birthdate.Year;
+            // Do stuff with it.
+            if (birthdate > today.AddYears(-age)) age--;
+            if (age < 13)
+            {
+                errorText.text = "You must be 13 years or older to create an account.";
+                return;
+            }
+            else
+                errorText.text = "";
+
         }
         else
         {

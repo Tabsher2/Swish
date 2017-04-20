@@ -18,7 +18,7 @@ public class shopScrollView : MonoBehaviour
         {
             GameObject temp;
             if (i == 0)
-                temp = Instantiate(gamePrefab) as GameObject;
+                temp = Instantiate(gamePrefabHeader) as GameObject;
             else
                 temp = Instantiate(gamePrefab) as GameObject;
             

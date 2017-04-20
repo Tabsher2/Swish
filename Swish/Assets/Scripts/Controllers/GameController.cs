@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using GameInfoForLoad;
-
+using System;
 
 public class GameController : MonoBehaviour
 {
@@ -47,6 +47,7 @@ public class GameController : MonoBehaviour
     public Text remainingShotsText;
     public Text userLettersText;
     public Text opponentLettersText;
+    public Text userScoreText;
 
     //Notification Variables
     public GameObject notificationPanel;
@@ -146,9 +147,11 @@ public class GameController : MonoBehaviour
         {
             acknowledgeEnemy = false;
             UpdateLetterText();
-            if (copyingShot)
+            if(player == 1 && turnCount <= 1)
+                ActivateShotSelection();
+            else if (copyingShot)
                 NotifyCopyShot();
-            else
+            else if (takingShot)
                 NotifyMissedShot();
         }
 
@@ -240,7 +243,7 @@ public class GameController : MonoBehaviour
                 return;
             for (int i = 0; i < ScoreAccumulator.hitObstacles.Count; i++)
             {
-                if (usedObstacles[i].locationX == ScoreAccumulator.hitObstacles[i].locationX && usedObstacles[i].locationZ == ScoreAccumulator.hitObstacles[i].locationZ)
+                if (Math.Abs(Math.Abs(usedObstacles[i].locationX) - Math.Abs(ScoreAccumulator.hitObstacles[i].locationX)) < 1e-6 && Math.Abs(Math.Abs(usedObstacles[i].locationZ) - Math.Abs(ScoreAccumulator.hitObstacles[i].locationZ)) < 1e-6) 
                     continue;
                 else
                 {
@@ -281,6 +284,7 @@ public class GameController : MonoBehaviour
         {
             StoreObstacleData();
             userScore += shotScore;
+            UpdateScoreText();
             NotifyOwnSuccess();
         }
         else
@@ -444,6 +448,7 @@ public class GameController : MonoBehaviour
             }
         }
         UpdateLetterText();
+        UpdateScoreText();
         NetworkData.UserData userData = NetworkController.FetchUserData(user, opponent);
         userName = userData.userName;
         opponentName = userData.opponentName;
@@ -1079,6 +1084,10 @@ public class GameController : MonoBehaviour
     private void ReturnToMenu()
     {
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+    }
+    private void UpdateScoreText()
+    {
+        userScoreText.text = "SCORE: " + userScore.ToString();
     }
 
     private void MissedCopyShot()

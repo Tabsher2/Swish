@@ -44,6 +44,10 @@ public class ThrowScript : MonoBehaviour
         //endPos.z = transform.position.x - Camera.main.transform.position.x;
         //endPos = Camera.main.ScreenToWorldPoint(endPos);
         swipeTime = endTime - startTime;
+        Debug.Log("time: " + swipeTime);
+        float swipeSpeed = swipeDistance.magnitude / swipeTime;
+        Debug.Log("mag: " + swipeDistance.magnitude);
+        Debug.Log("speed: " + swipeSpeed);
         if (swipeTime < maxTime && swipeDistance.magnitude > minSwipeDist)
         {
             if (!isThrown && !GameController.disableThrow)
@@ -67,7 +71,7 @@ public class ThrowScript : MonoBehaviour
                 force.x = xzMagnitude.x;
                 force /= factor;
                 force /= 1.5f;
-                force /= swipeTime/4;
+                force *= swipeSpeed / 200;
 
                 rb.velocity = force;
                 shotVelocity = rb.velocity;
