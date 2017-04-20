@@ -13,7 +13,8 @@ public class SplashScreen : MonoBehaviour {
     IEnumerator Example()
     {;
         yield return new WaitForSecondsRealtime(2);
-        if (PlayerPrefs.GetInt("user") <= 0)
+        Debug.Log(PlayerPrefs.GetInt("userID"));
+        if (PlayerPrefs.GetInt("userID") <= 0)
         {
             SceneManager.LoadScene("Login", LoadSceneMode.Single);
         }
