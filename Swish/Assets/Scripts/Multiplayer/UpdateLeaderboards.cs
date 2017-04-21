@@ -38,6 +38,7 @@ namespace NetworkData
             public int score;
             public int result;
             public int userLetters;
+            public int gameID;
         }
 
         [Serializable]
@@ -106,7 +107,7 @@ namespace NetworkData
             // Display the content.  
         }
 
-        public static void UpdateGameEnd(int user, int userScore, int result, int userLetters)
+        public static void UpdateGameEnd(int user, int userScore, int result, int userLetters, int gameID)
         {
             BaseResponse responseMessage = new BaseResponse();
             EndGameContent requestObject = new EndGameContent();
@@ -117,6 +118,7 @@ namespace NetworkData
             requestObject.score = userScore;
             requestObject.result = result;
             requestObject.userLetters = userLetters;
+            requestObject.gameID = gameID;
 
             string jsonString = JsonUtility.ToJson(requestObject);
             byte[] data = Encoding.UTF8.GetBytes(jsonString);

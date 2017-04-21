@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -52,7 +53,7 @@ public class ThrowScript : MonoBehaviour
                 isThrown = true;
                 rb.useGravity = true;
                 Vector3 force = new Vector3(0, 0, 0);
-                float angleDif = Mathf.Atan(swipeDistance.x/swipeDistance.y) * Mathf.Rad2Deg;
+                float angleDif = Mathf.Atan(swipeDistance.x / swipeDistance.y) * Mathf.Rad2Deg;
                 float forceAngle = CameraController.GetCameraDirection() + angleDif;
                 float yAngle = LocationSelector.GetYangle();
                 force.z = Mathf.Cos(forceAngle * Mathf.Deg2Rad) * swipeDistance.magnitude;
@@ -61,14 +62,13 @@ public class ThrowScript : MonoBehaviour
                 force.y = swipeDistance.magnitude * 0.8f;
                 float oldY = force.y;
                 force.y += Mathf.Tan(yAngle * Mathf.Deg2Rad) * -1 * xzMagnitude.magnitude;
-                float ratio = oldY / force.y;
-                xzMagnitude *= ratio;
-                float newwXZMag = force.y/(Mathf.Tan(yAngle * Mathf.Deg2Rad) * -1);
+                float yratio = oldY / force.y;
+                xzMagnitude *= yratio;
+                float newwXZMag = force.y / (Mathf.Tan(yAngle * Mathf.Deg2Rad) * -1);
                 force.z = xzMagnitude.y;
                 force.x = xzMagnitude.x;
                 force /= factor;
-                //force /= 1.5f;
-                force *= swipeSpeed / 250;
+                force *= Math.Min(swipeSpeed / 250, 10);
 
                 rb.velocity = force;
                 shotVelocity = rb.velocity;

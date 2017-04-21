@@ -47,9 +47,9 @@ public class NetworkController : MonoBehaviour
         NetworkData.UpdateLeaderboards.UpdateShotStreak(user, increment);
     }
 
-    public static void UpdateGameEnd(int user, int userScore, int result, int userLetters)
+    public static void UpdateGameEnd(int user, int userScore, int result, int userLetters, int gameID)
     {
-        NetworkData.UpdateLeaderboards.UpdateGameEnd(user, userScore, result, userLetters);
+        NetworkData.UpdateLeaderboards.UpdateGameEnd(user, userScore, result, userLetters, gameID);
     }
 
     public static void UpdateTime(int user, float gameTime)

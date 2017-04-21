@@ -51,6 +51,7 @@ public class GameController : MonoBehaviour
 
     //Notification Variables
     public GameObject notificationPanel;
+    public GameObject gameLoadingPanel;
     public Text notificationTitle;
     public Text notificationMessage;
 
@@ -211,7 +212,8 @@ public class GameController : MonoBehaviour
 
     private void ResetBall()
     {
-        Destroy(newBasketball);
+        if (newBasketball != null)
+            Destroy(newBasketball);
         BottomNetTrigger.ResetTrigger();
         TopNetTrigger.ResetTrigger();
         ScoreAccumulator.ResetScore();
@@ -452,6 +454,24 @@ public class GameController : MonoBehaviour
         NetworkData.UserData userData = NetworkController.FetchUserData(user, opponent);
         userName = userData.userName;
         opponentName = userData.opponentName;
+        if (userLetters.Length == gameLength)
+        {
+            NotifyLoss();
+            return;
+        }
+
+        if (player == 1 && !copyingShot && turnCount >= 50)
+        {
+            CheckForTieBreaker();
+            return;
+        }
+
+        if (player == 2 && turnCount >= 50)
+        {
+            CheckForTieBreaker();
+            return;
+        }
+
         switch (shotData.shotStatus)
         {
             case 0:
@@ -463,13 +483,12 @@ public class GameController : MonoBehaviour
             case 2:
                 NotifyEnemyFailure();
                 break;
+            case 3:
+                NotifyEnemyTimeout();
+                break;
         }
 
-        if (player == 1 && !copyingShot && turnCount >= 50)
-            CheckForTieBreaker();
-
-        if (player == 2 && turnCount >= 50)
-            CheckForTieBreaker();
+       
     }
 
     #region "Replay Code"
@@ -525,6 +544,11 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(false);
         if (startReplay)
             StartCoroutine(ShowInitialReplay());
+        else if (gameLoss)
+        {
+            gameLoss = false;
+            GameOver(0);
+        }
         else if (transitionToShotSelection)
             ActivateShotSelection();
         else if (turnCompleteMade)
@@ -542,11 +566,6 @@ public class GameController : MonoBehaviour
         {
             understand = false;
             acknowledgeEnemy = true;
-        }
-        else if (gameLoss)
-        {
-            gameLoss = false;
-            GameOver(0);
         }
         else if (gameWin)
         {
@@ -648,6 +667,17 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationTitle.text = "GOOD JOB!";
         notificationMessage.text = opponentName + "\nmissed your shot!\nThey received a letter!";
+        if (opponentLetters.Length == gameLength)
+            gameWin = true;
+        else
+            understand = true;
+    }
+
+    private void NotifyEnemyTimeout()
+    {
+        notificationPanel.SetActive(true);
+        notificationTitle.text = "LUCKY BREAK!";
+        notificationMessage.text = opponentName + "\ntook too long to take their turn!\nThey received a letter!";
         if (opponentLetters.Length == gameLength)
             gameWin = true;
         else
@@ -992,7 +1022,7 @@ public class GameController : MonoBehaviour
 
     private void GameOver(int result)
     {
-        NetworkController.UpdateGameEnd(user, userScore, result, userLetters.Length);
+        NetworkController.UpdateGameEnd(user, userScore, result, userLetters.Length, gameID);
         NetworkController.SendMissedShot(opponent, turnCount, gameID);
         ReturnToMenu();
     }
@@ -1083,6 +1113,9 @@ public class GameController : MonoBehaviour
 
     private void ReturnToMenu()
     {
+        ResetBall();
+        gameLoadingPanel.SetActive(true);
+        ObstacleController.placedObstacles.Clear();
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
     private void UpdateScoreText()

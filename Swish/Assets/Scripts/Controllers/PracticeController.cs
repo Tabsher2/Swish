@@ -22,6 +22,7 @@ public class PracticeController : MonoBehaviour
     public GameObject newLocationButton;
     public Text bestShotText;
     public Text lastShotText;
+    public GameObject gameLoadingPanel;
 
     private float gameTime;
     Camera mainCam;
@@ -341,6 +342,7 @@ public class PracticeController : MonoBehaviour
     {
         ResetBall();
         ObstacleController.placedObstacles.Clear();
+        gameLoadingPanel.SetActive(true);
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
 
