@@ -220,6 +220,8 @@ public class GameController : MonoBehaviour
         ThrowScript.ResetThrow();
         CheckBallTimeout.ResetDeadBall();
         BallCollision.ResetBallCounter();
+        ballInPlay = false;
+        disableThrow = false;
         shotScore = 0;
     }
 
@@ -505,6 +507,9 @@ public class GameController : MonoBehaviour
         isReplaying = true;
         remainingShotsText.GetComponent<Text>().enabled = false;
         newBasketball.SetActive(false);
+        userScoreText.enabled = false;
+        userLettersText.enabled = false;
+        opponentLettersText.enabled = false;
         replayText.GetComponent<Text>().enabled = true;
         replayBall = Instantiate(Basketball, ballStart, Quaternion.identity);
         StartCoroutine(DelayReplay());
@@ -525,6 +530,9 @@ public class GameController : MonoBehaviour
         Destroy(replayBall);
         remainingShotsText.GetComponent<Text>().enabled = true;
         newBasketball.SetActive(true);
+        userScoreText.enabled = true;
+        userLettersText.enabled = true;
+        opponentLettersText.enabled = true;
         replayText.GetComponent<Text>().enabled = false;
         if (startReplay)
             startReplay = false;
@@ -1114,8 +1122,8 @@ public class GameController : MonoBehaviour
     private void ReturnToMenu()
     {
         ResetBall();
-        gameLoadingPanel.SetActive(true);
         ObstacleController.placedObstacles.Clear();
+        gameLoadingPanel.SetActive(true);
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
     }
     private void UpdateScoreText()

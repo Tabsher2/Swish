@@ -122,7 +122,7 @@ public class PracticeController : MonoBehaviour
         {
             ballStart = PracticeLocationSelector.selectedLocation;
             Destroy(previousTokenInstance);
-            newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
+            CreateBall();
             spotSelected = false;
             selectingShot = false;
             PracticeLocationSelector.allowSelection = false;
@@ -144,13 +144,16 @@ public class PracticeController : MonoBehaviour
 
     private void ResetBall()
     {
-        Destroy(newBasketball);
+        if (newBasketball != null)
+            Destroy(newBasketball);
         PracticeBNT.ResetTrigger();
         PracticeTNT.ResetTrigger();
         PracticeScoreAccumulator.ResetScore();
         ThrowScript.ResetThrow();
         CheckBallTimeout.ResetDeadBall();
         BallCollision.ResetBallCounter();
+        disableThrow = false;
+        ballInPlay = false;
         doubleMake = true;
         shotScore = 0;
     }
