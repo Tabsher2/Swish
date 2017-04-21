@@ -16,16 +16,11 @@ namespace setUpGameInformantion
             
         }
 
-        private void Update()
+        public void activatePanel()
         {
-            if (opponentID != 0 && turnLength == 0)
-            {
-                panel1.SetActive(true);
-            }
-            if (turnLength != 0)
-            {
-                panel1.SetActive(false);
-            }
+            panel1.SetActive(true);
         }
+
+
     }
 }

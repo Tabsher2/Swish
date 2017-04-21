@@ -25,7 +25,7 @@ public class PracticeController : MonoBehaviour
 
     private float gameTime;
     Camera mainCam;
-    public int user = 4;
+    public int user;
     private int bestShot = 0;
     private int lastShot;
 
@@ -60,11 +60,13 @@ public class PracticeController : MonoBehaviour
 
     private void Awake()
     {
+        user = PlayerPrefs.GetInt("userID");
         mainCam = Camera.main;
     }
     // Use this for initialization
     void Start()
     {
+        
         //Send them to shot selection
         obstacleMenuButton.SetActive(false);
         mainMenuButton.SetActive(false);

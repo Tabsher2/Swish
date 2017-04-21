@@ -9,7 +9,7 @@ public class FriendChallengeButton : MonoBehaviour {
     public Button challengeButton;
     public GameObject setUpInfo;
     public GameObject thisObject;
-    public GameObject selectLength;
+
 
 	// ***********This is for the friend list challenge button
 	void Start () {
@@ -20,8 +20,10 @@ public class FriendChallengeButton : MonoBehaviour {
 	
 	// Update is called once per frame
 	void TaskOnClick () {
-        challengeButton.onClick.AddListener(TaskOnClick);
+        Debug.Log("frclked");
         setUpInfo.GetComponent<setUpGameInformantion.setUpGameInfo>().opponentID = thisObject.GetComponent<friendsListInfo.friendListPlayerID>().friendIDname;
-        
+        setUpInfo.GetComponent<setUpGameInfo>().activatePanel();
+
+
     }
 }
