@@ -8,6 +8,8 @@ public class AppLogIn : MonoBehaviour {
 
     public GameObject email;
     public GameObject password;
+    public GameObject accountCreated;
+    public GameObject error;
     public Button logIn;
     public bool loggedIn;
     private int userID;
@@ -25,9 +27,19 @@ public class AppLogIn : MonoBehaviour {
         if(userID == -111)
         {
             Debug.Log("Add wrong email or id");
+            accountCreated.SetActive(false);
+            error.SetActive(true);
+        }
+        else if(userID == -1)
+        {
+            Debug.Log("wrong password or username");
+            accountCreated.SetActive(false);
+            error.SetActive(true);
         }
         else
         {
+            accountCreated.SetActive(false);
+            error.SetActive(false);
             PlayerPrefs.SetInt("userID", userID);
             Debug.Log(PlayerPrefs.GetInt("userID"));
             SceneManager.LoadScene("Menu", LoadSceneMode.Single);

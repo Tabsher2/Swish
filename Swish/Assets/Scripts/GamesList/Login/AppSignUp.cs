@@ -9,6 +9,10 @@ using UnityEngine.UI;
 
 public class AppSignUp : MonoBehaviour {
 
+    public InputField emailField;
+    public InputField usernameField;
+    public InputField pwField;
+    public InputField dobField;
     public Text email;
     public Text username;
     public Text pw;
@@ -22,38 +26,39 @@ public class AppSignUp : MonoBehaviour {
 
     private void Start()
     {
+
         SignUp.onClick.AddListener(loginClicked);
     }
 
     void loginClicked()
     {
 
-        if (!Regex.IsMatch(username.text, @"^[a - z0 - 9]{3,18}$", RegexOptions.IgnoreCase))
+        if (!Regex.IsMatch(usernameField.text, @"^[a-z0-9]{3,18}$", RegexOptions.IgnoreCase))
         {
             errorText.text = "Usernames must be alphanumeric, contain no spaces, and be between 3 and 18 characters long.";
             return;
         }
-        else if(!IsEmail(email.text))
+        else if(!IsEmail(emailField.text))
         {
             errorText.text = "Email must be in the format: email@example.com.";
             return;
         }
-        else if (!Regex.IsMatch(pw.text, @"^(?=.*[0-9])(?=.*[a-z])[a-z0-9!@#$%^&*?]{6,18}$", RegexOptions.IgnoreCase))
+        else if (!Regex.IsMatch(pwField.text, @"^(?=.*[0-9])(?=.*[a-z])[a-z0-9!@#$%^&*?]{6,18}$", RegexOptions.IgnoreCase))
         {
             errorText.text = "Passwords can contain a-z, A-Z, 0-9, and !@#$%^&*? Passwords must contain at least one letter and one number. Passwords must be between 6 and 18 characters long.";
             return;
         }
-        else if (!Regex.IsMatch(dob.text, @"^\d{4}-\d{2}-\d{2}$", RegexOptions.IgnoreCase))
+        else if (!Regex.IsMatch(dob.text, @"^\d{4}\-\d{2}\-\d{2}$", RegexOptions.IgnoreCase))
         {
             errorText.text = "Date of birth invalid";
             return;
         }
-        else if (Regex.IsMatch(dob.text, @"^\d{4}-\d{2}-\d{2}$", RegexOptions.IgnoreCase))
+        else if (Regex.IsMatch(dobField.text, @"^\d{4}\-\d{2}\-\d{2}$", RegexOptions.IgnoreCase))
         {
             DateTime birthdate;
             try
             {
-                birthdate = new DateTime(Int32.Parse(dob.text.Substring(0, 4)), Int32.Parse(dob.text.Substring(5, 2)), Int32.Parse(dob.text.Substring(7, 2)));
+                birthdate = new DateTime(Int32.Parse(dobField.text.Substring(0, 4)), Int32.Parse(dobField.text.Substring(5, 2)), Int32.Parse(dobField.text.Substring(8, 2)));
             }
             catch
             {
@@ -80,7 +85,7 @@ public class AppSignUp : MonoBehaviour {
         {
             errorText.text = "";
         }
-        string added = NetworkController.AddUser(username.text, email.text, pw.text, dob.text);
+        string added = NetworkController.AddUser(usernameField.text, emailField.text, pwField.text, dobField.text);
         if (added.Length == 0)//user not created
         {
             errorText.text = "Account not created.\nPlease check each field.";
@@ -89,6 +94,11 @@ public class AppSignUp : MonoBehaviour {
         {
 
             Debug.Log(added);
+            emailField.text = "";
+            usernameField.text = "";
+            pwField.text = "";
+            dobField.text = "";
+            errorText.text = "";
 
             successText.SetActive(true);
             loginPanel.SetActive(true);

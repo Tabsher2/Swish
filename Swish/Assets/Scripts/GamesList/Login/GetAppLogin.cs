@@ -65,7 +65,10 @@ namespace NetworkData
                 id = "-111";
             }
             Debug.Log(id);
-            return Convert.ToInt32(id);
+            if (id == "FAILURE!")
+                return -1;
+            else
+                return Convert.ToInt32(id);
             // Display the content.  
         }
     }

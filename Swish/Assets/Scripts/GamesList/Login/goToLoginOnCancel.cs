@@ -5,6 +5,12 @@ using UnityEngine.UI;
 
 public class goToLoginOnCancel : MonoBehaviour {
 
+    public InputField emailField;
+    public InputField usernameField;
+    public InputField pwField;
+    public InputField dobField;
+    public Text errorText;
+
     public Button ButtonCancel;
 
     public GameObject signUpPanel;
@@ -17,6 +23,11 @@ public class goToLoginOnCancel : MonoBehaviour {
 
     void cancelClicked()
     {
+        emailField.text = "";
+        usernameField.text = "";
+        pwField.text = "";
+        dobField.text = "";
+        errorText.text = "";
         loginPanel.SetActive(true);
         signUpPanel.SetActive(false);
     }
