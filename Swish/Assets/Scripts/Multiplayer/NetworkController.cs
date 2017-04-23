@@ -12,9 +12,9 @@ public class NetworkController : MonoBehaviour
         NetworkData.SendShotData.SendMissedShot(turnOwnerId, turnNo, gameID);
     }
 
-    public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ, int gameID)
+    public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ, int gameID, int shotScore)
     {
-        NetworkData.SendShotData.SendMadeShot(player, turnOwnerId, userScore, locationX, locationZ, turnNo, ballX, ballY, ballZ, gameID);
+        NetworkData.SendShotData.SendMadeShot(player, turnOwnerId, userScore, locationX, locationZ, turnNo, ballX, ballY, ballZ, gameID, shotScore);
     }
 
     public static void AddLetter(int player, int userLetters, int failedShot, int gameID)

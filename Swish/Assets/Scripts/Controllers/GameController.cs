@@ -99,7 +99,11 @@ public class GameController : MonoBehaviour
     //Obstacle variables
     static Vector3 birdView = new Vector3(0, 20, 0);
     static Vector3 satellite = new Vector3(90, 0, 270);
-    static Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
+    public static Vector3 hoopLocation = new Vector3(8.5f, 2.5f, 0);
+
+    //Force Respawn Variables
+    int tapCount;
+    float doubleTapTimer;
 
 
 
@@ -175,6 +179,7 @@ public class GameController : MonoBehaviour
         }
 
         DetermineButtons();
+        ForceRespawn();
 
         if (replayComplete)
             EndReplay();
@@ -650,7 +655,7 @@ public class GameController : MonoBehaviour
         notificationPanel.SetActive(true);
         notificationTitle.text = "NICE SHOT!";
         notificationMessage.text = "You made it!\nShot Score: " + shotScore.ToString();
-        NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z, gameID);
+        NetworkController.SendMadeShot(player, opponent, userScore, ballStart.x, ballStart.z, turnCount, ThrowScript.shotVelocity.x, ThrowScript.shotVelocity.y, ThrowScript.shotVelocity.z, gameID, shotScore);
         ResetBall();
         turnCompleteMade = true;
     }
@@ -1162,6 +1167,28 @@ public class GameController : MonoBehaviour
             UpdateLetterText();
             if (turnCount >= 50)
                 CheckForTieBreaker();
+        }
+    }
+
+    private void ForceRespawn()
+    {
+        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            tapCount++;
+        }
+        if (tapCount > 0)
+        {
+            doubleTapTimer += Time.deltaTime;
+        }
+        if (doubleTapTimer > 0.5f)
+        {
+            doubleTapTimer = 0f;
+            tapCount = 0;
+        }
+        if (tapCount >= 2 && ThrowScript.isThrown)
+        {
+            remainingShots--;
+            CreateBall();
         }
     }
 

@@ -52,6 +52,8 @@ public class ThrowScript : MonoBehaviour
             {
                 isThrown = true;
                 rb.useGravity = true;
+                float distFactor = CalculateDistance(rb.position, new Vector3(GameController.hoopLocation.x, 1, GameController.hoopLocation.z)) / 8.5f;
+                distFactor = Mathf.Sqrt(Mathf.Sqrt(distFactor));
                 Vector3 force = new Vector3(0, 0, 0);
                 float angleDif = Mathf.Atan(swipeDistance.x / swipeDistance.y) * Mathf.Rad2Deg;
                 float forceAngle = CameraController.GetCameraDirection() + angleDif;
@@ -70,6 +72,7 @@ public class ThrowScript : MonoBehaviour
                 force /= factor;
                 force = (force/force.magnitude) * Mathf.Sqrt(Mathf.Sqrt(force.magnitude));
                 force *= Math.Min(swipeSpeed / ((Screen.height)/5), 8);
+                force *= distFactor;
 
                 rb.velocity = force;
                 shotVelocity = rb.velocity;
@@ -77,6 +80,10 @@ public class ThrowScript : MonoBehaviour
         }
     }
 
+    public float CalculateDistance(Vector3 v1, Vector3 v2)
+    {
+        return Mathf.Sqrt((v1.x - v2.x) * (v1.x - v2.x) + (v1.z - v2.z) * (v1.z - v2.z));
+    }
 
     IEnumerator ReturnBall()
     {

@@ -52,7 +52,9 @@ public class PracticeController : MonoBehaviour
     private bool ballInPlay = false;
     private bool doubleMake = true;
 
-    //Replay variables
+    //Respawn variables
+    int tapCount;
+    float doubleTapTimer;
 
     //Obstacle Variables
     static Vector3 birdView = new Vector3(0, 20, 0);
@@ -109,6 +111,7 @@ public class PracticeController : MonoBehaviour
         }
 
         DetermineButtons();
+        ForceRespawn();
 
         if (slideCameraUp && mainCam.transform.position.y != 20)
             PracticeCameraController.MoveToShotSelection(Camera.main.transform.position, Camera.main.transform.eulerAngles);
@@ -348,6 +351,27 @@ public class PracticeController : MonoBehaviour
         ObstacleController.placedObstacles.Clear();
         gameLoadingPanel.SetActive(true);
         SceneManager.LoadScene("Menu", LoadSceneMode.Single);
+    }
+
+    private void ForceRespawn()
+    {
+        if (Input.touchCount == 1 && Input.GetTouch(0).phase == TouchPhase.Began)
+        {
+            tapCount++;
+        }
+        if (tapCount > 0)
+        {
+            doubleTapTimer += Time.deltaTime;
+        }
+        if (doubleTapTimer > 0.5f)
+        {
+            doubleTapTimer = 0f;
+            tapCount = 0;
+        }
+        if (tapCount >= 2 && ThrowScript.isThrown)
+        {
+            CreateBall();
+        }
     }
 
 }

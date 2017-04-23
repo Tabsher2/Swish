@@ -44,6 +44,7 @@ namespace NetworkData
             public float ballX;
             public float ballY;
             public float ballZ;
+            public int shotScore;
         }
 
         [Serializable]
@@ -120,7 +121,7 @@ namespace NetworkData
             // Display the content.  
         }
 
-        public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ, int gameID)
+        public static void SendMadeShot(int player, int turnOwnerId, int userScore, float locationX, float locationZ, int turnNo, float ballX, float ballY, float ballZ, int gameID, int shotScore)
         {
             ServerResponse responseMessage = new ServerResponse();
             MadeShotRequest requestObject = new MadeShotRequest();
@@ -129,7 +130,7 @@ namespace NetworkData
             WebRequest request = WebRequest.Create(url);
 
             requestObject.gameID = gameID;
-
+            requestObject.shotScore = shotScore;
             //A 1 since the user made it
             requestObject.shotMade = 1;
             if (player == 1)
