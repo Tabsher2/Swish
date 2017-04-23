@@ -309,6 +309,7 @@ public class PracticeController : MonoBehaviour
     public void ActivateShotSelection()
     {
         Destroy(newBasketball);
+        DestroyObstacle.DeleteAllObstacles();
         previousTokenInstance = Instantiate(PreviousToken, new Vector3(ballStart.x, 0.08f, ballStart.z), Quaternion.identity);
         selectingShot = true;
         obstacleMenuButton.SetActive(false);

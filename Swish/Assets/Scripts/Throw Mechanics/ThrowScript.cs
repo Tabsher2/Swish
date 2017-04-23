@@ -18,7 +18,7 @@ public class ThrowScript : MonoBehaviour
     float endTime;
     float swipeTime;
     Vector3 swipeDistance;
-    const int factor = 325;
+    const int factor = 200;
 
     int throwDirection;
 
@@ -68,7 +68,8 @@ public class ThrowScript : MonoBehaviour
                 force.z = xzMagnitude.y;
                 force.x = xzMagnitude.x;
                 force /= factor;
-                force *= Math.Min(swipeSpeed / 250, 10);
+                force = (force/force.magnitude) * Mathf.Sqrt(Mathf.Sqrt(force.magnitude));
+                force *= Math.Min(swipeSpeed / ((Screen.height)/5), 8);
 
                 rb.velocity = force;
                 shotVelocity = rb.velocity;

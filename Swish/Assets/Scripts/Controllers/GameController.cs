@@ -505,6 +505,7 @@ public class GameController : MonoBehaviour
     public void ReplayShot()
     {
         isReplaying = true;
+        replayShotButton.SetActive(false);
         remainingShotsText.GetComponent<Text>().enabled = false;
         newBasketball.SetActive(false);
         userScoreText.enabled = false;
@@ -526,6 +527,7 @@ public class GameController : MonoBehaviour
     public void EndReplay()
     {
         isReplaying = false;
+        replayShotButton.SetActive(true);
         replayComplete = false;
         Destroy(replayBall);
         remainingShotsText.GetComponent<Text>().enabled = true;
