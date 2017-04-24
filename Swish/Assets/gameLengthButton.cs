@@ -12,6 +12,7 @@ public class gameLengthButton : MonoBehaviour {
     public GameObject setUpInfo;
     public GameObject tenGamesPanel;
     public GameObject gameLengthPanel;
+    public GameObject gameLoadingPanel;
     public Text buttonText;
 
     // ***********This is for the friend list challenge button
@@ -33,6 +34,8 @@ public class gameLengthButton : MonoBehaviour {
             int gameLength = setUpInfo.GetComponent<setUpGameInformantion.setUpGameInfo>().turnLength;
             int gameID = NetworkController.AddGame(user, opponent, gameLength);
             GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID = gameID;
+            gameLengthPanel.SetActive(false);
+            gameLoadingPanel.SetActive(true);
             Debug.Log(GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID + " " + gameID);
             SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
         }

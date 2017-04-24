@@ -7,8 +7,10 @@ using UnityEngine.UI;
 using GameInfoForLoad;
  
 
-public class playButtonGameList : MonoBehaviour {
+public class playButtonGameList : MonoBehaviour
+{
     public GameObject thisObject;
+    public Text playButtonText;
     public Button playButtonListItem;
     public int user;
     public int turnOwner;
@@ -26,7 +28,7 @@ public class playButtonGameList : MonoBehaviour {
 
     void TaskOnClick()
     {
-
+        playButtonText.text = "LOADING";
         GameObject.Find("GameInfo").GetComponent<GameInfo>().gameID = thisObject.GetComponent<currentGameContentInfo>().gameID;
         SceneManager.LoadScene("MainScene", LoadSceneMode.Single);
     }

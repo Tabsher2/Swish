@@ -73,12 +73,16 @@ public class ScoreAccumulator : MonoBehaviour
                 case 0:
                     swish = false;
                     removeRim = true;
-                    rimIndices.Add(i);
+                    hitObstacles.RemoveAt(i);
+                    i--;
+                    //rimIndices.Add(i);
                     break;
                 case -1:
                     swish = false;
                     removeBackboard = true;
-                    bbIndices.Add(i);
+                    hitObstacles.RemoveAt(i);
+                    i--;
+                    //bbIndices.Add(i);
                     break;
                 case 1:
                     shotScore += 150;
@@ -88,16 +92,18 @@ public class ScoreAccumulator : MonoBehaviour
                     break;
             }
         }
-        if (removeRim)
+        /*if (removeRim)
         {
-            for (int i = 0; i < rimIndices.Count; i++)
+            for (int i = rimIndices.Count-1; i >= 0; i++)
+            {
                 hitObstacles.RemoveAt(rimIndices[i]);
+            }
         }
         if (removeBackboard)
         {
-            for (int i = 0; i < bbIndices.Count; i++)
+            for (int i = bbIndices.Count-1; i >= 0; i++)
                 hitObstacles.RemoveAt(bbIndices[i]);
-        }
+        }*/
         if (GameController.ballStart.x < -6)
             shotScore += 100;
         if (GameController.ballStart.x < 0)

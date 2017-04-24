@@ -145,6 +145,14 @@ public class PracticeController : MonoBehaviour
         newBasketball = Instantiate(Basketball, ballStart, Quaternion.identity);
     }
 
+    public static void SetMadeShot(int score, bool isSwish)
+    {
+        MadeShot = true;
+        shotScore = score;
+        swish = isSwish;
+        Debug.Log("Made Shot!");
+    }
+
     private void ResetBall()
     {
         if (newBasketball != null)
@@ -161,13 +169,6 @@ public class PracticeController : MonoBehaviour
         shotScore = 0;
     }
 
-    public static void SetMadeShot(int score, bool isSwish)
-    {
-        MadeShot = true;
-        shotScore = score;
-        swish = isSwish;
-        Debug.Log("Made Shot!");
-    }
 
     private void ShotMade()
     {
