@@ -62,6 +62,7 @@ namespace GCmenu
             buttonHome.Select();
             Debug.Log("Current games for user: " + user);
             getCurrentGames(user);
+            InvokeRepeating("Refresh", 0f, 20.0f);
         }
 
         // Update is called once per frame
@@ -109,6 +110,16 @@ namespace GCmenu
 
 
 
+        }
+
+        public void Refresh()
+        {
+            getCurrentGames(user);
+            leaderboardMenu.GetComponent<leaderBoardDisplay>().displayLeaderBoard();
+            friendsMenu.GetComponent<FriendsList>().getFriendsList();
+            accountMenu.GetComponent<userAccountInfo>().setData();
+            refresh = false;
+            Debug.Log("Refreshed");
         }
 
         public void getCurrentGames(int user)
